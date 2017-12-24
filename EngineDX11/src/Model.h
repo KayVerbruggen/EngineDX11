@@ -18,12 +18,14 @@ private:
 	std::vector<Vertex> vertices = 
 	{
 		{ -0.5f, -0.5f, 1.0f,  1.0f, 0.0f, 0.0f, 1.0f },
-		{ 0.0f,  0.5f,  1.0f,  0.0f, 0.0f, 1.0f, 1.0f },
-		{ 0.5f, -0.5f,  1.0f,  0.0f, 1.0f, 0.0f, 1.0f }
+		{ 0.5f, -0.5f,  1.0f,  0.0f, 1.0f, 0.0f, 1.0f },
+		{ 0.5f,  0.5f,  1.0f,  0.0f, 0.0f, 1.0f, 1.0f },
+		{ -0.5f, 0.5f,  1.0f,  1.0f, 1.0f, 1.0f, 1.0f }
 	};
 	std::vector<unsigned int> indices = 
 	{
-		0, 1, 2
+		2, 1, 0,
+		3, 2, 0
 	};
 
 	ID3D11Device* m_device;

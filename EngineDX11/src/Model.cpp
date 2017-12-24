@@ -24,11 +24,10 @@ Model::Model(ID3D11Device*& Device, ID3D11DeviceContext*& DeviceContext)
 		MessageBox(0, "Failed to create vertex buffer", "Direct3D 11", MB_OK);
 
 	// TODO: Make the index buffer work.
-	/*
 	CD3D11_BUFFER_DESC indexBufferDesc;
 	ZeroMemory(&indexBufferDesc, sizeof(CD3D11_BUFFER_DESC));
 
-	indexBufferDesc.ByteWidth = indices.size() * sizeof(unsigned int);
+	indexBufferDesc.ByteWidth = (UINT)indices.size() * sizeof(unsigned int);
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	indexBufferDesc.StructureByteStride = 0;
 	indexBufferDesc.MiscFlags = 0;
@@ -38,15 +37,14 @@ Model::Model(ID3D11Device*& Device, ID3D11DeviceContext*& DeviceContext)
 	D3D11_SUBRESOURCE_DATA indexData;
 	ZeroMemory(&indexData, sizeof(D3D11_SUBRESOURCE_DATA));
 
-	vertexData.pSysMem = indices.data();
+	indexData.pSysMem = indices.data();
 	hr = m_device->CreateBuffer(&indexBufferDesc, &indexData, &m_indexBuffer);
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create index buffer", "Direct3D 11", MB_OK);
-	*/
 
 	// Vertex shader creation
-	std::ifstream vsFile("BasicVS.cso", std::ios::binary);
-	std::ifstream psFile("BasicPS.cso", std::ios::binary);
+	std::ifstream vsFile("shaders\\BasicVS.cso", std::ios::binary);
+	std::ifstream psFile("shaders\\BasicPS.cso", std::ios::binary);
 
 	std::vector<char> vsData = { std::istreambuf_iterator<char>(vsFile), std::istreambuf_iterator<char>() };
 	std::vector<char> psData = { std::istreambuf_iterator<char>(psFile), std::istreambuf_iterator<char>() };
@@ -97,7 +95,8 @@ void Model::Draw()
 	UINT offset = 0;
 
 	m_deviceCon->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
+	m_deviceCon->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	m_deviceCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	m_deviceCon->Draw(3, 0);
+	m_deviceCon->DrawIndexed((UINT)indices.size(), 0, 0);
 }
