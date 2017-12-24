@@ -4,8 +4,8 @@
 
 struct Vertex
 {
-	DirectX::XMFLOAT3 position;
-	DirectX::XMFLOAT4 color;
+	float x, y, z;
+	float r, g, b, a;
 };
 
 // TODO: What if one of these changes? How do we handle that.
@@ -15,4 +15,4 @@ const float SCREEN_HEIGHT	= 720.0f;
 const bool	V_SYNC			= true;
 const bool	FULLSCREEN		= false;
 const float REFRESH_RATE	= 60.0f;
-const UINT	MSAA			= 1;
+const unsigned int	MSAA	= 1;		// Can't be higher than 8?

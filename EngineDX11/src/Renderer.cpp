@@ -235,7 +235,11 @@ void Renderer::InitViewport()
 
 void Renderer::BeginFrame()
 {
+	m_deviceCon->OMSetRenderTargets(1, &m_renderTargetView, nullptr);
 	m_deviceCon->ClearRenderTargetView(m_renderTargetView, DirectX::Colors::Coral);
+
+	m_deviceCon->RSSetState(m_rasterizerState);
+	m_deviceCon->OMSetDepthStencilState(m_depthStencilState, 1);
 }
 
 void Renderer::EndFrame()
@@ -247,4 +251,14 @@ void Renderer::EndFrame()
 	{
 		m_swapChain->Present(0, 0);
 	}
+}
+
+ID3D11Device*& Renderer::GetDevice()
+{
+	return m_device;
+}
+
+ID3D11DeviceContext*& Renderer::GetDeviceContext()
+{
+	return m_deviceCon;
 }

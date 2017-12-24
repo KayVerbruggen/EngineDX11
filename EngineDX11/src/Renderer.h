@@ -11,9 +11,10 @@ public:
 	~Renderer();
 
 	void BeginFrame();
-	void Draw(float dt);
 	void EndFrame();
 
+	ID3D11Device*& GetDevice();
+	ID3D11DeviceContext*& GetDeviceContext();
 private:
 	// Used for error checking
 	HRESULT hr;
@@ -43,4 +44,3 @@ private:
 	void InitRasterizerState();
 	void InitViewport();
 };
-
