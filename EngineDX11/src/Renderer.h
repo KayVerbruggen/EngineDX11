@@ -19,6 +19,7 @@ private:
 	HRESULT hr;
 
 	// Direct3D interfaces
+	// TODO: Check if devices can get lost like with D3D9.
 	ID3D11Device* m_device;
 	ID3D11DeviceContext* m_deviceCon;
 	IDXGISwapChain* m_swapChain;

@@ -68,7 +68,9 @@ Renderer::~Renderer()
 
 void Renderer::InitDeviceAndSwapchain(HWND windowHandle)
 {
-	DXGI_SWAP_CHAIN_DESC sd = { 0 };
+	DXGI_SWAP_CHAIN_DESC sd;
+	ZeroMemory(&sd, sizeof(DXGI_SWAP_CHAIN_DESC));
+
 	// Buffer
 	sd.BufferCount			= 1;
 	sd.BufferDesc.Format	= DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -88,6 +90,10 @@ void Renderer::InitDeviceAndSwapchain(HWND windowHandle)
 	// Window settings
 	sd.OutputWindow			= windowHandle;
 	sd.Windowed				= !FULLSCREEN;
+
+	// Refresh rate
+	sd.BufferDesc.RefreshRate.Numerator = 1;
+	sd.BufferDesc.RefreshRate.Denominator = (UINT)REFRESH_RATE;
 
 	// No flags
 	sd.Flags = 0;
@@ -122,7 +128,7 @@ void Renderer::InitDepthBuffer()
 	depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depthBufferDesc.MipLevels = 1;
 	depthBufferDesc.ArraySize = 1;
-	depthBufferDesc.SampleDesc.Count = MSAA;
+	depthBufferDesc.SampleDesc.Count = 1;
 	depthBufferDesc.SampleDesc.Quality = 0;
 	depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
@@ -137,7 +143,9 @@ void Renderer::InitDepthBuffer()
 
 void Renderer::InitDepthStencilState()
 {
-	D3D11_DEPTH_STENCIL_DESC depthStencilDesc = { 0 };
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+
 	depthStencilDesc.DepthEnable = true;
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
@@ -166,11 +174,13 @@ void Renderer::InitDepthStencilState()
 
 void Renderer::InitDepthStencilView()
 {
-	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc = {};
+	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
+	ZeroMemory(&depthStencilViewDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
 	
 	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
+	depthStencilViewDesc.Flags = 0;
 
 	hr = m_device->CreateDepthStencilView(m_depthBuffer, &depthStencilViewDesc, &m_depthStencilView);
 	if (hr != S_OK)
@@ -179,7 +189,9 @@ void Renderer::InitDepthStencilView()
 
 void Renderer::InitRasterizerState()
 {
-	D3D11_RASTERIZER_DESC rasterizerDesc = {};
+	D3D11_RASTERIZER_DESC rasterizerDesc;
+	ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
+	
 	if (MSAA > 1)
 	{
 		rasterizerDesc.AntialiasedLineEnable = true;
