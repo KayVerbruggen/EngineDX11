@@ -10,6 +10,7 @@ public:
 
 	void HandleMessage();
 	MSG& GetMSG();
+	HWND GetWindowHandle();
 
 private:
 	HRESULT hr;
@@ -19,7 +20,6 @@ private:
 	MSG msg;
 
 	// Settings window
-	float m_width, m_height;
 	const char* m_className = "WindowClass";
 	const char* m_windowTitle = "TestGame";
 };

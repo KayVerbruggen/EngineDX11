@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "Util.h"
 
 LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -50,13 +51,10 @@ Window::Window(HINSTANCE hInstance, UINT showCmd)
 
 	RegisterClassEx(&wc);
 
-	m_width = (float)GetSystemMetrics(SM_CXSCREEN);
-	m_height = (float)GetSystemMetrics(SM_CYSCREEN);
-
 	DWORD Style = WS_OVERLAPPED | WS_VISIBLE | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SIZEBOX;
 
 	m_windowHandle = CreateWindowEx(WS_EX_APPWINDOW, m_className, m_windowTitle, Style,
-		0, 0, (int)m_width, (int)m_height, 0, 0, hInstance, 0);
+		0, 0, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT, 0, 0, hInstance, 0);
 
 	if (m_windowHandle == NULL)
 		MessageBoxA(0, "WindowHandle is still NULL", "Error", MB_OK);
@@ -77,7 +75,7 @@ Window::~Window()
 
 void Window::HandleMessage()
 {
-	if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
@@ -87,4 +85,9 @@ void Window::HandleMessage()
 MSG& Window::GetMSG()
 {
 	return msg;
+}
+
+HWND Window::GetWindowHandle()
+{
+	return m_windowHandle;
 }
