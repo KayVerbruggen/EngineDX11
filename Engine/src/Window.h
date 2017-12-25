@@ -21,6 +21,6 @@ private:
 
 	// Settings window
 	const char* m_className = "WindowClass";
-	const char* m_windowTitle = "TestGame";
+	const char* m_windowTitle = "Game";
 };
 
