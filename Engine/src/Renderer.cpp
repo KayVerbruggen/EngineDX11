@@ -13,6 +13,7 @@ Renderer::Renderer(HWND windowHandle)
 
 	InitRasterizerState();
 	InitViewport();
+	InitAlphaBlendState();
 }
 
 Renderer::~Renderer()
@@ -233,10 +234,39 @@ void Renderer::InitViewport()
 	m_deviceCon->RSSetViewports(1, &vp);
 }
 
+void Renderer::InitAlphaBlendState()
+{
+	D3D11_BLEND_DESC blendStateDesc;
+	ZeroMemory(&blendStateDesc, sizeof(D3D11_BLEND_DESC));
+
+	blendStateDesc.RenderTarget[0].BlendEnable = true;
+	blendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendStateDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+
+	blendStateDesc.AlphaToCoverageEnable = false;
+
+	hr = m_device->CreateBlendState(&blendStateDesc, &m_blendState);
+	if (hr != S_OK)
+		MessageBox(0, "Failed to create blend state", "Direct3D 11", MB_OK);
+
+	float blendFactor[4];
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+
+	m_deviceCon->OMSetBlendState(m_blendState, blendFactor, 0xffffffff);
+}
+
 void Renderer::BeginFrame()
 {
 	m_deviceCon->OMSetRenderTargets(1, &m_renderTargetView, nullptr);
-	m_deviceCon->ClearRenderTargetView(m_renderTargetView, DirectX::Colors::Coral);
+	m_deviceCon->ClearRenderTargetView(m_renderTargetView, DirectX::Colors::Black);
 
 	m_deviceCon->RSSetState(m_rasterizerState);
 	m_deviceCon->OMSetDepthStencilState(m_depthStencilState, 1);

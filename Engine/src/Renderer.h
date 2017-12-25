@@ -35,6 +35,9 @@ private:
 	// Rasterizer state
 	ID3D11RasterizerState* m_rasterizerState;
 
+	// Blend state
+	ID3D11BlendState* m_blendState;
+
 	// Functions for initializing.
 	void InitDeviceAndSwapchain(HWND windowHandle);
 	void InitRenderTargetView();
@@ -43,4 +46,5 @@ private:
 	void InitDepthStencilView();
 	void InitRasterizerState();
 	void InitViewport();
+	void InitAlphaBlendState();
 };
