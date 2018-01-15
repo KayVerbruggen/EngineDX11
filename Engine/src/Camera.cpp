@@ -30,35 +30,58 @@ Camera::~Camera()
 
 void Camera::Update(float deltaTime)
 {
+	movementForward = 0.0f;
+	movementHorizontal = 0.0f;
+
 	if (GetAsyncKeyState(W))
 	{
-		camPos += XMVectorSet(0.0f, 0.0f, movementSpeed, 0.0f);
+		movementForward = movementSpeed;
 	}
 	if (GetAsyncKeyState(S))
 	{
-		camPos -= XMVectorSet(0.0f, 0.0f, movementSpeed, 0.0f);
+		movementForward = -movementSpeed;
 	}
 	if (GetAsyncKeyState(A))
 	{
-		camPos -= XMVectorSet(movementSpeed, 0.0f, 0.0f, 0.0f);
+		movementHorizontal = -movementSpeed;
 	}
 	if (GetAsyncKeyState(D))
 	{
-		camPos += XMVectorSet(movementSpeed, 0.0f, 0.0f, 0.0f);
+		movementHorizontal = movementSpeed;
 	}
 
 	GetCursorPos(&currMousePos);
-	
-	if (currMousePos.x - prevMousePos.x != 0)
+
+	if (currMousePos.x != prevMousePos.x)
 	{
-
+		camYaw += (currMousePos.x - prevMousePos.x) * (mouseSens / 100.0f);
 	}
-	if (currMousePos.y - prevMousePos.y != 0)
+	if (currMousePos.y != prevMousePos.y)
 	{
+		camPitch += (currMousePos.y - prevMousePos.y) * (mouseSens / 100.0f);
 
+		if (camPitch > 90.0f)
+			camPitch = 90.0f;
+
+		if (camPitch < -90.0f)
+			camPitch = -90.0f;
 	}
 
-	camTarget = camPos + XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+	camRotationMatrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(camPitch), XMConvertToRadians(camYaw), 0);
+	camTarget = XMVector3TransformCoord(defaultForward, camRotationMatrix);
+	camTarget = XMVector3Normalize(camTarget);
+
+	XMMATRIX RotateYTempMatrix;
+	RotateYTempMatrix = XMMatrixRotationY(XMConvertToRadians(camYaw));
+
+	camRight = XMVector3TransformCoord(defaultRight, RotateYTempMatrix);
+	camUp = XMVector3TransformCoord(camUp, RotateYTempMatrix);
+	camForward = XMVector3TransformCoord(defaultForward, RotateYTempMatrix);
+
+	camPos += movementHorizontal * camRight;
+	camPos += movementForward * camForward;
+
+	camTarget = camPos + camTarget;
 	camView = XMMatrixLookAtLH(camPos, camTarget, camUp);
 	
 	SetCursorPos(prevMousePos.x, prevMousePos.y);

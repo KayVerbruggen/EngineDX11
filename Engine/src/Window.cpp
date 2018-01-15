@@ -61,9 +61,7 @@ Window::Window(HINSTANCE hInstance, UINT showCmd)
 		MessageBoxA(0, "WindowHandle is still NULL", "Error", MB_OK);
 
 	ShowWindow(m_windowHandle, showCmd);
-	
-	// TODO: Uncomment this when we have a proper camera set up.
-	//ShowCursor(FALSE);
+	ShowCursor(FALSE);
 
 	UpdateWindow(m_windowHandle);
 
