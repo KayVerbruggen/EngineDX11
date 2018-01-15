@@ -34,6 +34,7 @@ private:
 
 	// Rasterizer state
 	ID3D11RasterizerState* m_rasterizerState;
+	ID3D11RasterizerState* m_rasterizerWireframeState;
 
 	// Blend state
 	ID3D11BlendState* m_blendState;

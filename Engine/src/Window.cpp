@@ -36,6 +36,7 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
 
 Window::Window(HINSTANCE hInstance, UINT showCmd)
 {
+	// TODO: Figure out how to change icons.
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
@@ -75,7 +76,7 @@ Window::~Window()
 
 void Window::HandleMessage()
 {
-	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+	if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);

@@ -26,14 +26,14 @@ float4 vignettePass(float4 vignettePixelPos, float4 color)
 		vignettePixelPos.y = vignettePixelPos.y / 720.0;
 	}
 
-	float2 dist = vignettePixelPos - 0.5;
+	float2 dist = vignettePixelPos - 0.5f;
 	dist.x = 1 - dot(dist, dist);
-	color.a -= max(1.0f - saturate(pow(dist.x, 2.0f)), 0.1);
+	color.a -= 1.0f - saturate(pow(dist.x, 5.5f));
 
 	return color;
 }
 
 float4 main(InputPS input) : SV_TARGET
 {
-	return vignettePass(input.position, input.color);
+	return input.color;
 }

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\GameTimer.h" />
     <ClInclude Include="src\Renderer.h" />
@@ -26,6 +27,7 @@
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\GameTimer.cpp" />
     <ClCompile Include="src\Renderer.cpp" />

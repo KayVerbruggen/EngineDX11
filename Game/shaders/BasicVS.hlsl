@@ -1,3 +1,8 @@
+cbuffer cbPerObject
+{
+	float4x4 wvp;
+};
+
 struct InputVS
 {
 	float3 position : POSITION;
@@ -14,7 +19,7 @@ OutputVS main( InputVS input)
 {
 	OutputVS output;
 
-	output.position = float4(input.position.x, input.position.y, input.position.z, 1);
+	output.position = mul(float4(input.position.x, input.position.y, input.position.z, 1), wvp);
 	output.color = input.color;
 
 	return output;

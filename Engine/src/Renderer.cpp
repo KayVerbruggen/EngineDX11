@@ -21,49 +21,49 @@ Renderer::~Renderer()
 	if (m_device)
 	{
 		m_device->Release();
-		m_device = nullptr;
+		m_device = 0;
 	}
 
 	if (m_deviceCon)
 	{
 		m_deviceCon->Release();
-		m_deviceCon = nullptr;
+		m_deviceCon = 0;
 	}
 
 	if (m_renderTargetView)
 	{
 		m_renderTargetView->Release();
-		m_renderTargetView = nullptr;
+		m_renderTargetView = 0;
 	}
 
 	if (m_swapChain)
 	{
 		m_swapChain->Release();
-		m_swapChain = nullptr;
+		m_swapChain = 0;
 	}
 
 	if (m_depthBuffer)
 	{
 		m_depthBuffer->Release();
-		m_depthBuffer = nullptr;
+		m_depthBuffer = 0;
 	}
 
 	if (m_depthStencilState)
 	{
 		m_depthStencilState->Release();
-		m_depthStencilState = nullptr;
+		m_depthStencilState = 0;
 	}
 
 	if (m_depthStencilView)
 	{
 		m_depthStencilView->Release();
-		m_depthStencilView = nullptr;
+		m_depthStencilView = 0;
 	}
 
 	if (m_rasterizerState)
 	{
 		m_rasterizerState->Release();
-		m_rasterizerState = nullptr;
+		m_rasterizerState = 0;
 	}
 }
 
@@ -103,7 +103,7 @@ void Renderer::InitDeviceAndSwapchain(HWND windowHandle)
 										D3D11_SDK_VERSION, &sd, &m_swapChain, &m_device, nullptr, &m_deviceCon);
 
 	if (hr != S_OK)
-		MessageBox(0, "Failed to create Device and Swapchain", "Direct3D 11", MB_OK);
+		MessageBox(0, "Failed to create Device and Swapchain", "Direct3D 11 Error", MB_OK);
 }
 
 void Renderer::InitRenderTargetView()
@@ -111,11 +111,11 @@ void Renderer::InitRenderTargetView()
 	ID3D11Texture2D* backBuffer;
 	hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
 	if (hr != S_OK)
-		MessageBox(0, "Failed to get buffer!", "Direct3D 11", MB_OK);
+		MessageBox(0, "Failed to get buffer!", "Direct3D 11 Error", MB_OK);
 
 	hr = m_device->CreateRenderTargetView(backBuffer, nullptr, &m_renderTargetView);
 	if (hr != S_OK)
-		MessageBox(0, "Failed to create render target view!", "Direct3D 11", MB_OK);
+		MessageBox(0, "Failed to create render target view!", "Direct3D 11 Error", MB_OK);
 
 	backBuffer->Release();
 }
@@ -138,7 +138,7 @@ void Renderer::InitDepthBuffer()
 
 	hr = m_device->CreateTexture2D(&depthBufferDesc, nullptr, &m_depthBuffer);
 	if (hr != S_OK)
-		MessageBox(0, "Failed to create depth buffer!", "Direct3D 11", MB_OK);
+		MessageBox(0, "Failed to create depth buffer!", "Direct3D 11 Error", MB_OK);
 
 }
 
@@ -168,7 +168,7 @@ void Renderer::InitDepthStencilState()
 	// Create depth stencil state
 	hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);
 	if (hr != S_OK)
-		MessageBox(0, "Creating Depth stencil state failed!", "Direct3D 11", MB_OK);
+		MessageBox(0, "Creating Depth stencil state failed!", "Direct3D 11 Error", MB_OK);
 
 	m_deviceCon->OMSetDepthStencilState(m_depthStencilState, 1);
 }
@@ -185,7 +185,7 @@ void Renderer::InitDepthStencilView()
 
 	hr = m_device->CreateDepthStencilView(m_depthBuffer, &depthStencilViewDesc, &m_depthStencilView);
 	if (hr != S_OK)
-		MessageBox(0, "Failed to create depth stencil view!", "Direct3D 11", MB_OK);
+		MessageBox(0, "Failed to create depth stencil view!", "Direct3D 11 Error", MB_OK);
 }
 
 void Renderer::InitRasterizerState()
@@ -215,9 +215,36 @@ void Renderer::InitRasterizerState()
 
 	hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState);
 	if (hr != S_OK)
-		MessageBox(0, "Creating rasterizer state failed!", "Direct3D 11", MB_OK);
+		MessageBox(0, "Creating rasterizer state failed!", "Direct3D 11 Error", MB_OK);
 
 	m_deviceCon->RSSetState(m_rasterizerState);
+
+	D3D11_RASTERIZER_DESC rasterizerWireframeDesc;
+	ZeroMemory(&rasterizerWireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
+
+	if (MSAA > 1)
+	{
+		rasterizerWireframeDesc.AntialiasedLineEnable = true;
+		rasterizerWireframeDesc.MultisampleEnable = true;
+	}
+	else
+	{
+		rasterizerWireframeDesc.AntialiasedLineEnable = false;
+		rasterizerWireframeDesc.MultisampleEnable = false;
+	}
+
+	rasterizerWireframeDesc.CullMode = D3D11_CULL_BACK;
+	rasterizerWireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
+	rasterizerWireframeDesc.DepthBias = 0;
+	rasterizerWireframeDesc.DepthBiasClamp = 0.0;
+	rasterizerWireframeDesc.DepthClipEnable = true;
+	rasterizerWireframeDesc.FrontCounterClockwise = false;
+	rasterizerWireframeDesc.ScissorEnable = false;
+	rasterizerWireframeDesc.SlopeScaledDepthBias = 0.0f;
+
+	hr = m_device->CreateRasterizerState(&rasterizerWireframeDesc, &m_rasterizerWireframeState);
+	if (hr != S_OK)
+		MessageBox(0, "Creating rasterizer state failed!", "Direct3D 11 Error", MB_OK);
 }
 
 void Renderer::InitViewport()
@@ -228,8 +255,8 @@ void Renderer::InitViewport()
 	vp.TopLeftY = 0.0f;
 	vp.Width = SCREEN_WIDTH;
 	vp.Height = SCREEN_HEIGHT;
-	vp.MinDepth = 0.0;
-	vp.MaxDepth = 1.0;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
 
 	m_deviceCon->RSSetViewports(1, &vp);
 }
@@ -246,13 +273,13 @@ void Renderer::InitAlphaBlendState()
 	blendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
 	blendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 	blendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendStateDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+	blendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 	blendStateDesc.AlphaToCoverageEnable = false;
 
 	hr = m_device->CreateBlendState(&blendStateDesc, &m_blendState);
 	if (hr != S_OK)
-		MessageBox(0, "Failed to create blend state", "Direct3D 11", MB_OK);
+		MessageBox(0, "Failed to create blend state", "Direct3D 11 Error", MB_OK);
 
 	float blendFactor[4];
 	blendFactor[0] = 0.0f;
@@ -268,7 +295,15 @@ void Renderer::BeginFrame()
 	m_deviceCon->OMSetRenderTargets(1, &m_renderTargetView, nullptr);
 	m_deviceCon->ClearRenderTargetView(m_renderTargetView, DirectX::Colors::Black);
 
-	m_deviceCon->RSSetState(m_rasterizerState);
+	if (GetAsyncKeyState(VK_TAB))
+	{
+		m_deviceCon->RSSetState(m_rasterizerWireframeState);
+	}
+	else
+	{
+		m_deviceCon->RSSetState(m_rasterizerState);
+	}
+
 	m_deviceCon->OMSetDepthStencilState(m_depthStencilState, 1);
 }
 
