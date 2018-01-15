@@ -37,8 +37,7 @@ private:
 	POINT prevMousePos = { (LONG)SCREEN_WIDTH / 2, (LONG)SCREEN_HEIGHT / 2 };
 	POINT currMousePos = { (LONG)SCREEN_WIDTH / 2, (LONG)SCREEN_HEIGHT / 2 };
 	float mouseSens = 5.0f;
-	float movementHorizontal = 0.0f;
-	float movementForward = 0.0f;
-	float movementSpeed = 0.1f;
+	float movementHorizontal, movementForward;
+	float movementSpeed = 2.5f;
 };
 

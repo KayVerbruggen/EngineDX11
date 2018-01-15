@@ -1,6 +1,6 @@
 #include "Window.h"
 #include "Renderer.h"
-#include "GameTimer.h"
+#include "Timer.h"
 #include "Model.h"
 #include "Camera.h"
 
@@ -8,17 +8,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 {
 	Window window(hInstance, showCmd);
 	Renderer renderer(window.GetWindowHandle());
-	GameTimer timer;
 	Camera camera(renderer.GetDevice(), renderer.GetDeviceContext());
 	Model test(renderer.GetDevice(), renderer.GetDeviceContext());
+	StartTimer();
 
 	while (window.GetMSG().message != WM_QUIT)
 	{
-		timer.Reset();
-		window.HandleMessage();		// Handle the messages first
-		timer.Tick();
-
-		camera.Update(timer.DeltaTime());
+		// Handle the messages first
+		window.HandleMessage();
+		
+		// Logic and handling user input here
+		UpdateTimer();
+		camera.Update(GetDeltaTime());
 
 		// Rendering here
 		renderer.BeginFrame();
@@ -26,5 +27,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 		test.Draw(camera);
 
 		renderer.EndFrame();
+
+		// Reset the timer
+		ResetTimer();
 	}
 }

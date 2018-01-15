@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Model.h" />
-    <ClInclude Include="src\GameTimer.h" />
+    <ClInclude Include="src\Timer.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Util.h" />
     <ClInclude Include="src\Window.h" />

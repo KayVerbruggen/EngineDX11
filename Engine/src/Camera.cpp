@@ -35,19 +35,19 @@ void Camera::Update(float deltaTime)
 
 	if (GetAsyncKeyState(W))
 	{
-		movementForward = movementSpeed;
+		movementForward = movementSpeed * deltaTime;
 	}
 	if (GetAsyncKeyState(S))
 	{
-		movementForward = -movementSpeed;
+		movementForward = -movementSpeed * deltaTime;
 	}
 	if (GetAsyncKeyState(A))
 	{
-		movementHorizontal = -movementSpeed;
+		movementHorizontal = -movementSpeed * deltaTime;
 	}
 	if (GetAsyncKeyState(D))
 	{
-		movementHorizontal = movementSpeed;
+		movementHorizontal = movementSpeed * deltaTime;
 	}
 
 	GetCursorPos(&currMousePos);
