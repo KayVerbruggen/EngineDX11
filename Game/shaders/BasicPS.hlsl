@@ -1,29 +1,32 @@
 struct InputPS
 {
-	float4 position : SV_POSITION;
-	float4 color	: COLOR;
+	float4 position  : SV_POSITION;
+	float2 texCoord : TEXCOORDS;
 };
 
-float centerX = 640.0f;
-float centerY = 360.0f;
+Texture2D objTexture;
+SamplerState objSamplerState;
+
+float centerX = 960.0f;
+float centerY = 540.0f;
 
 float4 vignettePass(float4 vignettePixelPos, float4 color)
 {
 	if (vignettePixelPos.x < centerX)
 	{
-		vignettePixelPos.x = -(vignettePixelPos.x / 1280.0);
+		vignettePixelPos.x = -(vignettePixelPos.x / 1920.0);
 	}
 	else
 	{
-		vignettePixelPos.x = vignettePixelPos.x / 1280.0;
+		vignettePixelPos.x = vignettePixelPos.x / 1920.0;
 	}
 	if (vignettePixelPos.y < centerY)
 	{
-		vignettePixelPos.y = -(vignettePixelPos.y / 720.0);
+		vignettePixelPos.y = -(vignettePixelPos.y / 1080.0);
 	}
 	else
 	{
-		vignettePixelPos.y = vignettePixelPos.y / 720.0;
+		vignettePixelPos.y = vignettePixelPos.y / 1080.0;
 	}
 
 	float2 dist = vignettePixelPos - 0.5f;
@@ -35,5 +38,6 @@ float4 vignettePass(float4 vignettePixelPos, float4 color)
 
 float4 main(InputPS input) : SV_TARGET
 {
-	return input.color;
+	// return vignettePass(input.position, input.color);
+	return objTexture.Sample(objSamplerState, input.texCoord);
 }

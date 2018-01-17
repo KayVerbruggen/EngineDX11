@@ -32,6 +32,7 @@ private:
 
 	float camYaw = 0.0f;
 	float camPitch = 0.0f;
+	float fov = 90.0f;
 
 	// Variables for movement.
 	POINT prevMousePos = { (LONG)SCREEN_WIDTH / 2, (LONG)SCREEN_HEIGHT / 2 };

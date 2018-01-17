@@ -6,13 +6,13 @@ cbuffer cbPerObject
 struct InputVS
 {
 	float3 position : POSITION;
-	float4 color	: COLOR;
+	float2 texCoord	: TEXCOORD;
 };
 
 struct OutputVS
 {
 	float4 position : SV_POSITION;
-	float4 color	: COLOR;
+	float2 texCoord	: TEXCOORD;
 };
 
 OutputVS main( InputVS input)
@@ -20,7 +20,7 @@ OutputVS main( InputVS input)
 	OutputVS output;
 
 	output.position = mul(float4(input.position.x, input.position.y, input.position.z, 1), wvp);
-	output.color = input.color;
+	output.texCoord = input.texCoord;
 
 	return output;
 }

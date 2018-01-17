@@ -62,6 +62,7 @@ Window::Window(HINSTANCE hInstance, UINT showCmd)
 
 	ShowWindow(m_windowHandle, showCmd);
 	ShowCursor(FALSE);
+	SetCursorPos((int)SCREEN_WIDTH / 2, (int)SCREEN_HEIGHT / 2);
 
 	UpdateWindow(m_windowHandle);
 

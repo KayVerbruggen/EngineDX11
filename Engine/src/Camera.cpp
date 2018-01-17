@@ -18,7 +18,7 @@ Camera::Camera(ID3D11Device*& Device, ID3D11DeviceContext*& DeviceContext)
 
 	camView = XMMatrixLookAtLH(camPos, camTarget, camUp);
 
-	camProjection = XMMatrixPerspectiveFovLH(XMConvertToRadians(103.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
+	camProjection = XMMatrixPerspectiveFovLH(XMConvertToRadians(fov), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
 
 	world = XMMatrixIdentity();
 	wvp = world * camView * camProjection;
@@ -71,12 +71,12 @@ void Camera::Update(float deltaTime)
 	camTarget = XMVector3TransformCoord(defaultForward, camRotationMatrix);
 	camTarget = XMVector3Normalize(camTarget);
 
-	XMMATRIX RotateYTempMatrix;
-	RotateYTempMatrix = XMMatrixRotationY(XMConvertToRadians(camYaw));
+	XMMATRIX rotateYTempMatrix;
+	rotateYTempMatrix = XMMatrixRotationY(XMConvertToRadians(camYaw));
 
-	camRight = XMVector3TransformCoord(defaultRight, RotateYTempMatrix);
-	camUp = XMVector3TransformCoord(camUp, RotateYTempMatrix);
-	camForward = XMVector3TransformCoord(defaultForward, RotateYTempMatrix);
+	camRight = XMVector3TransformCoord(defaultRight, rotateYTempMatrix);
+	camUp = XMVector3TransformCoord(camUp, rotateYTempMatrix);
+	camForward = XMVector3TransformCoord(defaultForward, rotateYTempMatrix);
 
 	camPos += movementHorizontal * camRight;
 	camPos += movementForward * camForward;
@@ -84,7 +84,7 @@ void Camera::Update(float deltaTime)
 	camTarget = camPos + camTarget;
 	camView = XMMatrixLookAtLH(camPos, camTarget, camUp);
 	
-	SetCursorPos(prevMousePos.x, prevMousePos.y);
+	//SetCursorPos(prevMousePos.x, prevMousePos.y);
 }
 
 XMMATRIX Camera::GetWVP()
