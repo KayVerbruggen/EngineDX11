@@ -1,16 +1,24 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include "Light.h"
 
 struct Vertex
 {
 	float x, y, z;
 	float u, v;
+	float nx, ny, nz;
 };
 
-struct cbPerObject
+struct cbPerObjectStruct
 {
 	DirectX::XMMATRIX wvp;
+	DirectX::XMMATRIX world;
+};
+
+struct cbPerFrameStruct
+{
+	Light light;
 };
 
 // TODO: What if one of these changes? How do we handle that.

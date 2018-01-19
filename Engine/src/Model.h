@@ -5,9 +5,8 @@
 #include "Util.h"
 #include "Camera.h"
 #include <d3d11.h>
-#include <DirectXMath.h>
-#include <d3d11.h>
 #include <d3dx11.h>
+#include <DirectXMath.h>
 using namespace DirectX;
 
 class Model
@@ -22,40 +21,40 @@ private:
 	std::vector<Vertex> m_vertices = 
 	{
 		// Front Face
-		Vertex{ -1.0f, -1.0f, -1.0f, 0.0f, 1.0f },
-		Vertex{ -1.0f,  1.0f, -1.0f, 0.0f, 0.0f },
-		Vertex{  1.0f,  1.0f, -1.0f, 1.0f, 0.0f },
-		Vertex{  1.0f, -1.0f, -1.0f, 1.0f, 1.0f },
+		Vertex{ -1.0f, -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, -1.0f, -1.0f, },
+		Vertex{ -1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f,  1.0f, -1.0f, },
+		Vertex{ 1.0f,  1.0f, -1.0f, 1.0f, 0.0f,  1.0f,  1.0f, -1.0f, },
+		Vertex{ 1.0f, -1.0f, -1.0f, 1.0f, 1.0f,  1.0f, -1.0f, -1.0f, },
 
 		// Back Face
-		Vertex{ -1.0f, -1.0f, 1.0f, 1.0f, 1.0f },
-		Vertex{  1.0f, -1.0f, 1.0f, 0.0f, 1.0f },
-		Vertex{  1.0f,  1.0f, 1.0f, 0.0f, 0.0f },
-		Vertex{ -1.0f,  1.0f, 1.0f, 1.0f, 0.0f },
+		Vertex{ -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, },
+		Vertex{ 1.0f, -1.0f, 1.0f, 0.0f, 1.0f,  1.0f, -1.0f, 1.0f, },
+		Vertex{ 1.0f,  1.0f, 1.0f, 0.0f, 0.0f,  1.0f,  1.0f, 1.0f, },
+		Vertex{ -1.0f,  1.0f, 1.0f, 1.0f, 0.0f, -1.0f,  1.0f, 1.0f, },
 
 		// Top Face
-		Vertex{ -1.0f, 1.0f, -1.0f, 0.0f, 1.0f },
-		Vertex{ -1.0f, 1.0f,  1.0f, 0.0f, 0.0f },
-		Vertex{  1.0f, 1.0f,  1.0f, 1.0f, 0.0f },
-		Vertex{  1.0f, 1.0f, -1.0f, 1.0f, 1.0f },
+		Vertex{ -1.0f, 1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 1.0f, -1.0f, },
+		Vertex{ -1.0f, 1.0f,  1.0f, 0.0f, 0.0f, -1.0f, 1.0f,  1.0f, },
+		Vertex{ 1.0f, 1.0f,  1.0f, 1.0f, 0.0f,  1.0f, 1.0f,  1.0f, },
+		Vertex{ 1.0f, 1.0f, -1.0f, 1.0f, 1.0f,  1.0f, 1.0f, -1.0f, },
 
 		// Bottom Face
-		Vertex{ -1.0f, -1.0f, -1.0f, 1.0f, 1.0f },
-		Vertex{  1.0f, -1.0f, -1.0f, 0.0f, 1.0f },
-		Vertex{  1.0f, -1.0f,  1.0f, 0.0f, 0.0f },
-		Vertex{ -1.0f, -1.0f,  1.0f, 1.0f, 0.0f },
+		Vertex{ -1.0f, -1.0f, -1.0f, 1.0f, 1.0f,-1.0f, -1.0f, -1.0f, },
+		Vertex{ 1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, -1.0f, -1.0f, },
+		Vertex{ 1.0f, -1.0f,  1.0f, 0.0f, 0.0f, 1.0f, -1.0f,  1.0f, },
+		Vertex{ -1.0f, -1.0f,  1.0f, 1.0f, 0.0f,-1.0f, -1.0f,  1.0f, },
 
 		// Left Face
-		Vertex{ -1.0f, -1.0f,  1.0f, 0.0f, 1.0f },
-		Vertex{ -1.0f,  1.0f,  1.0f, 0.0f, 0.0f },
-		Vertex{ -1.0f,  1.0f, -1.0f, 1.0f, 0.0f },
-		Vertex{ -1.0f, -1.0f, -1.0f, 1.0f, 1.0f },
+		Vertex{ -1.0f, -1.0f,  1.0f, 0.0f, 1.0f,  -1.0f, -1.0f,  1.0f, },
+		Vertex{ -1.0f,  1.0f,  1.0f, 0.0f, 0.0f,  -1.0f,  1.0f,  1.0f, },
+		Vertex{ -1.0f,  1.0f, -1.0f, 1.0f, 0.0f,  -1.0f,  1.0f, -1.0f, },
+		Vertex{ -1.0f, -1.0f, -1.0f, 1.0f, 1.0f,  -1.0f, -1.0f, -1.0f, },
 
 		// Right Face
-		Vertex{ 1.0f, -1.0f, -1.0f, 0.0f, 1.0f },
-		Vertex{ 1.0f,  1.0f, -1.0f, 0.0f, 0.0f },
-		Vertex{ 1.0f,  1.0f,  1.0f, 1.0f, 0.0f },
-		Vertex{ 1.0f, -1.0f,  1.0f, 1.0f, 1.0f }
+		Vertex{ 1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, -1.0f, -1.0f, },
+		Vertex{ 1.0f,  1.0f, -1.0f, 0.0f, 0.0f, 1.0f,  1.0f, -1.0f, },
+		Vertex{ 1.0f,  1.0f,  1.0f, 1.0f, 0.0f, 1.0f,  1.0f,  1.0f, },
+		Vertex{ 1.0f, -1.0f,  1.0f, 1.0f, 1.0f, 1.0f, -1.0f,  1.0f, }
 	};
 
 	std::vector<unsigned int> m_indices = 
@@ -108,8 +107,12 @@ private:
 	ID3D11SamplerState* m_textureSamplerState;
 
 	ID3D11Buffer* m_bufferPerObject;
-	cbPerObject cbPerObj;
+	cbPerObjectStruct cbPerObj;
+	ID3D11Buffer* m_bufferPerFrame;
+	cbPerFrameStruct cbPerFrame;
 	XMMATRIX localWorld;
+
+	DirectionalLight sun;
 
 	float rotY = 0.0f;
 	XMMATRIX rotation, scale, translation;

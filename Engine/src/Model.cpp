@@ -5,6 +5,10 @@ Model::Model(ID3D11Device*& Device, ID3D11DeviceContext*& DeviceContext)
 	m_device = Device;
 	m_deviceCon = DeviceContext;
 
+	sun.ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 0.2f);
+	sun.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	sun.dir = XMFLOAT3(0.5f, -0.5f, -1.0f);
+
 	CreateVertexBuffer(m_vertices);
 	CreateIndexBuffer(m_indices);
 	CreateShaders("shaders\\BasicVS.cso", "shaders\\BasicPS.cso");
@@ -20,34 +24,61 @@ Model::~Model()
 		m_vertexBuffer->Release();
 		m_vertexBuffer = 0;
 	}
+
 	if (m_indexBuffer)
 	{	
 		m_indexBuffer->Release();
 		m_indexBuffer = 0;
 	}
+
 	if (m_vertexShader)
 	{
 		m_vertexShader->Release();
 		m_vertexShader = 0;
 	}
+
 	if (m_pixelShader)
 	{
 		m_pixelShader->Release();
 		m_pixelShader = 0;
 	}
+
 	if (m_bufferPerObject)
 	{
 		m_bufferPerObject->Release();
 		m_bufferPerObject = 0;
+	}
+
+	if (m_texture)
+	{
+		m_texture->Release();
+		m_texture = 0;
+	}
+
+	if (m_textureSamplerState)
+	{
+		m_textureSamplerState->Release();
+		m_textureSamplerState = 0;
+	}
+
+	if (m_bufferPerFrame)
+	{
+		m_bufferPerFrame->Release();
+		m_bufferPerFrame = 0;
 	}
 }
 
 void Model::Draw(Camera& cam)
 {
 	cam.SetWorld(localWorld);
+	cbPerObj.world = XMMatrixTranspose(localWorld);
 	cbPerObj.wvp = XMMatrixTranspose(cam.GetWVP());
 	m_deviceCon->UpdateSubresource(m_bufferPerObject, 0, nullptr, &cbPerObj, 0, 0);
 	m_deviceCon->VSSetConstantBuffers(0, 1, &m_bufferPerObject);
+
+	cbPerFrame.light = sun;
+	m_deviceCon->UpdateSubresource(m_bufferPerFrame, 0, nullptr, &cbPerFrame, 0, 0);
+	m_deviceCon->PSSetConstantBuffers(0, 1, &m_bufferPerFrame);
 
 	m_deviceCon->PSSetShaderResources(0, 1, &m_texture);
 	m_deviceCon->PSSetSamplers(0, 1, &m_textureSamplerState);
@@ -86,10 +117,11 @@ void Model::CreateShaders(const char* vsFileName, const char* psFileName)
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA }
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA }
 	};
 
-	hr = m_device->CreateInputLayout(layout, 2, vsData.data(), vsData.size(), &m_inputLayout);
+	hr = m_device->CreateInputLayout(layout, 3, vsData.data(), vsData.size(), &m_inputLayout);
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create input layout", "Direct3D 11 Error", MB_OK);
 }
@@ -142,12 +174,17 @@ void Model::CreateConstantBuffer()
 	ZeroMemory(&constantBufferDesc, sizeof(CD3D11_BUFFER_DESC));
 
 	constantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	constantBufferDesc.ByteWidth = sizeof(cbPerObject);
+	constantBufferDesc.ByteWidth = sizeof(cbPerObjectStruct);
 	constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	constantBufferDesc.CPUAccessFlags = 0;
 	constantBufferDesc.MiscFlags = 0;
 
 	hr = m_device->CreateBuffer(&constantBufferDesc, nullptr, &m_bufferPerObject);
+	if (hr != S_OK)
+		MessageBox(0, "Failed to create constant buffer", "Direct3D 11 Error", MB_OK);
+
+	constantBufferDesc.ByteWidth = sizeof(cbPerFrameStruct);
+	hr = m_device->CreateBuffer(&constantBufferDesc, nullptr, &m_bufferPerFrame);
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create constant buffer", "Direct3D 11 Error", MB_OK);
 }
@@ -167,12 +204,19 @@ void Model::InitWorld()
 
 void Model::LoadTexture(const char* texFile)
 {
+	// TODO: Switch to DTX or something else. Try to remain support for png instead of DDS only.
 	hr = D3DX11CreateShaderResourceViewFromFile(m_device, texFile, nullptr, nullptr, &m_texture, nullptr);
 	if (hr != S_OK)
 	{
 		MessageBox(0, "Failed to read texture from file", "D3DX11 Error", MB_OK);
 		return;
 	}
+	
+	D3D11_SHADER_RESOURCE_VIEW_DESC resourceDesc;
+	ZeroMemory(&resourceDesc, sizeof(resourceDesc));
+	resourceDesc.Texture2D = ;
+
+	m_device->CreateShaderResourceView();
 
 	D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory(&samplerDesc, sizeof(samplerDesc));

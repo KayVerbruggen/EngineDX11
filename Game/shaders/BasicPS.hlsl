@@ -2,6 +2,19 @@ struct InputPS
 {
 	float4 position  : SV_POSITION;
 	float2 texCoord : TEXCOORDS;
+	float3 normal : NORMAL;
+};
+
+struct Light
+{
+	float3 dir;
+	float4 ambient;
+	float4 diffuse;
+};
+
+cbuffer cbPerFrame
+{
+	Light light;
 };
 
 Texture2D objTexture;
@@ -38,6 +51,15 @@ float4 vignettePass(float4 vignettePixelPos, float4 color)
 
 float4 main(InputPS input) : SV_TARGET
 {
+	input.normal = normalize(input.normal);
+	
 	// return vignettePass(input.position, input.color);
-	return objTexture.Sample(objSamplerState, input.texCoord);
+	float4 diffuse = objTexture.Sample(objSamplerState, input.texCoord);
+
+	float3 finalColor;
+
+	finalColor = diffuse * light.ambient;
+	finalColor += saturate(dot(light.dir, input.normal) * light.diffuse * diffuse);
+
+	return float4(finalColor, diffuse.a);
 }

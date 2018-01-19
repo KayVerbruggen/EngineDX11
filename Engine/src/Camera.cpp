@@ -84,7 +84,7 @@ void Camera::Update(float deltaTime)
 	camTarget = camPos + camTarget;
 	camView = XMMatrixLookAtLH(camPos, camTarget, camUp);
 	
-	//SetCursorPos(prevMousePos.x, prevMousePos.y);
+	SetCursorPos(prevMousePos.x, prevMousePos.y);
 }
 
 XMMATRIX Camera::GetWVP()
