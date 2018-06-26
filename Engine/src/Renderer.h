@@ -4,6 +4,8 @@
 #include <DirectXColors.h>
 #include <d3dcompiler.h>
 
+#include "Model.h"
+
 class Renderer
 {
 public:
@@ -11,18 +13,16 @@ public:
 	~Renderer();
 
 	void BeginFrame();
+	void Draw(Model &model, const Camera &cam, const Light &light, Shader &shader);
 	void EndFrame();
 
-	ID3D11Device*& GetDevice();
-	ID3D11DeviceContext*& GetDeviceContext();
-private:
-	// Used for error checking
-	HRESULT hr;
+	static ID3D11Device* GetDevice() { return m_device; };
+	static ID3D11DeviceContext* GetDeviceContext() { return m_deviceCon; };
 
+private:
 	// Direct3D interfaces
-	// TODO: Check if devices can get lost like with D3D9.
-	ID3D11Device* m_device;
-	ID3D11DeviceContext* m_deviceCon;
+	static ID3D11Device* m_device;
+	static ID3D11DeviceContext* m_deviceCon;
 	IDXGISwapChain* m_swapChain;
 	
 	ID3D11RenderTargetView* m_renderTargetView;

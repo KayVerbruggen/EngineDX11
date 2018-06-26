@@ -13,9 +13,3 @@ struct Light
 	XMFLOAT4 ambient;
 	XMFLOAT4 diffuse;
 };
-
-struct DirectionalLight : public Light
-{
-	DirectionalLight();
-	~DirectionalLight();
-};

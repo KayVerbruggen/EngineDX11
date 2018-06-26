@@ -9,19 +9,15 @@ using namespace DirectX;
 class Camera
 {
 public:
-	Camera(ID3D11Device*& Device, ID3D11DeviceContext*& DeviceContext);
+	Camera();
 	~Camera();
 
 	void Update(float deltaTime);
-	XMMATRIX GetWVP();
-	void SetWorld(const XMMATRIX& localWorld);
+
+	inline XMMATRIX GetView() const { return camView; };
+	inline XMMATRIX GetProjection() const { return camProjection; };
 
 private:
-	HRESULT hr;
-
-	ID3D11Device* m_device;
-	ID3D11DeviceContext* m_deviceCon;
-
 	XMMATRIX wvp, world, camView, camProjection, camRotationMatrix;
 	XMVECTOR camPos, camTarget, camUp;
 	XMVECTOR defaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);

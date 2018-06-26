@@ -7,11 +7,8 @@ enum Keys : WPARAM
 	R, S, T, U, V, W, X, Y, Z
 };
 
-Camera::Camera(ID3D11Device*& Device, ID3D11DeviceContext*& DeviceContext)
+Camera::Camera()
 {
-	m_device = Device;
-	m_deviceCon = DeviceContext;
-
 	camPos		= XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f);
 	camTarget	= XMVectorSet(0.0f, 0.0f,  1.0f, 0.0f);
 	camUp		= XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
@@ -85,14 +82,4 @@ void Camera::Update(float deltaTime)
 	camView = XMMatrixLookAtLH(camPos, camTarget, camUp);
 	
 	SetCursorPos(prevMousePos.x, prevMousePos.y);
-}
-
-XMMATRIX Camera::GetWVP()
-{
-	return wvp;
-}
-
-void Camera::SetWorld(const XMMATRIX& localWorld)
-{
-	wvp = localWorld * camView * camProjection;
 }

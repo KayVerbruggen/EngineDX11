@@ -6,17 +6,17 @@
 struct Vertex
 {
 	float x, y, z;
-	float u, v;
 	float nx, ny, nz;
 };
 
-struct cbPerObjectStruct
+struct CBPerObject
 {
-	DirectX::XMMATRIX wvp;
 	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX projection;
 };
 
-struct cbPerFrameStruct
+struct CBPerFrame
 {
 	Light light;
 };
@@ -28,4 +28,4 @@ const float SCREEN_HEIGHT	= 1080.0f;
 const bool	V_SYNC			= true;
 const bool	FULLSCREEN		= false;
 const float REFRESH_RATE	= 60.0f;
-const unsigned int	MSAA	= 1;		// Can't be higher than 8?
+const unsigned int	MSAA	= 8;		// Can't be higher than 8?

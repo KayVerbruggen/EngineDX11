@@ -1,6 +1,9 @@
 #include "Renderer.h"
 #include "Util.h"
 
+ID3D11Device* Renderer::m_device;
+ID3D11DeviceContext* Renderer::m_deviceCon;
+
 Renderer::Renderer(HWND windowHandle)
 {
 	InitDeviceAndSwapchain(windowHandle);
@@ -99,7 +102,7 @@ void Renderer::InitDeviceAndSwapchain(HWND windowHandle)
 	// No flags
 	sd.Flags = 0;
 
-	hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0, 
+	HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0,
 										D3D11_SDK_VERSION, &sd, &m_swapChain, &m_device, nullptr, &m_deviceCon);
 
 	if (hr != S_OK)
@@ -109,7 +112,7 @@ void Renderer::InitDeviceAndSwapchain(HWND windowHandle)
 void Renderer::InitRenderTargetView()
 {
 	ID3D11Texture2D* backBuffer;
-	hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
+	HRESULT hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
 	if (hr != S_OK)
 		MessageBox(0, "Failed to get buffer!", "Direct3D 11 Error", MB_OK);
 
@@ -136,7 +139,7 @@ void Renderer::InitDepthBuffer()
 	depthBufferDesc.CPUAccessFlags = 0;
 	depthBufferDesc.MiscFlags = 0;
 
-	hr = m_device->CreateTexture2D(&depthBufferDesc, nullptr, &m_depthBuffer);
+	HRESULT hr = m_device->CreateTexture2D(&depthBufferDesc, nullptr, &m_depthBuffer);
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create depth buffer!", "Direct3D 11 Error", MB_OK);
 
@@ -166,7 +169,7 @@ void Renderer::InitDepthStencilState()
 	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 	// Create depth stencil state
-	hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);
+	HRESULT hr = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);
 	if (hr != S_OK)
 		MessageBox(0, "Creating Depth stencil state failed!", "Direct3D 11 Error", MB_OK);
 
@@ -183,7 +186,7 @@ void Renderer::InitDepthStencilView()
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 	depthStencilViewDesc.Flags = 0;
 
-	hr = m_device->CreateDepthStencilView(m_depthBuffer, &depthStencilViewDesc, &m_depthStencilView);
+	HRESULT hr = m_device->CreateDepthStencilView(m_depthBuffer, &depthStencilViewDesc, &m_depthStencilView);
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create depth stencil view!", "Direct3D 11 Error", MB_OK);
 }
@@ -213,36 +216,15 @@ void Renderer::InitRasterizerState()
 	rasterizerDesc.ScissorEnable = false;
 	rasterizerDesc.SlopeScaledDepthBias = 0.0f;
 
-	hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState);
+	HRESULT hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState);
 	if (hr != S_OK)
 		MessageBox(0, "Creating rasterizer state failed!", "Direct3D 11 Error", MB_OK);
 
 	m_deviceCon->RSSetState(m_rasterizerState);
 
-	D3D11_RASTERIZER_DESC rasterizerWireframeDesc;
-	ZeroMemory(&rasterizerWireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
+	rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
 
-	if (MSAA > 1)
-	{
-		rasterizerWireframeDesc.AntialiasedLineEnable = true;
-		rasterizerWireframeDesc.MultisampleEnable = true;
-	}
-	else
-	{
-		rasterizerWireframeDesc.AntialiasedLineEnable = false;
-		rasterizerWireframeDesc.MultisampleEnable = false;
-	}
-
-	rasterizerWireframeDesc.CullMode = D3D11_CULL_BACK;
-	rasterizerWireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
-	rasterizerWireframeDesc.DepthBias = 0;
-	rasterizerWireframeDesc.DepthBiasClamp = 0.0;
-	rasterizerWireframeDesc.DepthClipEnable = true;
-	rasterizerWireframeDesc.FrontCounterClockwise = false;
-	rasterizerWireframeDesc.ScissorEnable = false;
-	rasterizerWireframeDesc.SlopeScaledDepthBias = 0.0f;
-
-	hr = m_device->CreateRasterizerState(&rasterizerWireframeDesc, &m_rasterizerWireframeState);
+	hr = m_device->CreateRasterizerState(&rasterizerDesc, &m_rasterizerWireframeState);
 	if (hr != S_OK)
 		MessageBox(0, "Creating rasterizer state failed!", "Direct3D 11 Error", MB_OK);
 }
@@ -277,7 +259,7 @@ void Renderer::InitAlphaBlendState()
 
 	blendStateDesc.AlphaToCoverageEnable = false;
 
-	hr = m_device->CreateBlendState(&blendStateDesc, &m_blendState);
+	HRESULT hr = m_device->CreateBlendState(&blendStateDesc, &m_blendState);
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create blend state", "Direct3D 11 Error", MB_OK);
 
@@ -293,7 +275,7 @@ void Renderer::InitAlphaBlendState()
 void Renderer::BeginFrame()
 {
 	m_deviceCon->OMSetRenderTargets(1, &m_renderTargetView, nullptr);
-	m_deviceCon->ClearRenderTargetView(m_renderTargetView, DirectX::Colors::Black);
+	m_deviceCon->ClearRenderTargetView(m_renderTargetView, DirectX::Colors::CornflowerBlue);
 
 	if (GetAsyncKeyState(VK_TAB))
 	{
@@ -307,6 +289,20 @@ void Renderer::BeginFrame()
 	m_deviceCon->OMSetDepthStencilState(m_depthStencilState, 1);
 }
 
+void Renderer::Draw(Model &model, const Camera &cam, const Light &light, Shader &shader)
+{
+	shader.SetWorld(model.GetWorld());
+	shader.SetView(cam.GetView());
+	shader.SetProjection(cam.GetProjection());
+	shader.SetLight(light);
+	shader.Bind();
+
+	model.GetVertexBuffer().Bind();
+	model.GetIndexBuffer().Bind();
+
+	m_deviceCon->DrawIndexed((UINT)model.GetIndexSize(), 0, 0);
+}
+
 void Renderer::EndFrame()
 {
 	if (V_SYNC)
@@ -316,14 +312,4 @@ void Renderer::EndFrame()
 	{
 		m_swapChain->Present(0, 0);
 	}
-}
-
-ID3D11Device*& Renderer::GetDevice()
-{
-	return m_device;
-}
-
-ID3D11DeviceContext*& Renderer::GetDeviceContext()
-{
-	return m_deviceCon;
 }

@@ -36,7 +36,13 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
 
 Window::Window(HINSTANCE hInstance, UINT showCmd)
 {
+	// Settings window
+	DWORD Style = WS_OVERLAPPED | WS_VISIBLE | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SIZEBOX;
+	const char* m_className = "WindowClass";
+	const char* m_windowTitle = "Game";
+
 	// TODO: Figure out how to change icons.
+	WNDCLASSEX wc = {};
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
@@ -51,8 +57,6 @@ Window::Window(HINSTANCE hInstance, UINT showCmd)
 	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 
 	RegisterClassEx(&wc);
-
-	DWORD Style = WS_OVERLAPPED | WS_VISIBLE | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SIZEBOX;
 
 	m_windowHandle = CreateWindowEx(WS_EX_APPWINDOW, m_className, m_windowTitle, Style,
 		0, 0, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT, 0, 0, hInstance, 0);
@@ -73,21 +77,24 @@ Window::~Window()
 {
 }
 
-void Window::HandleMessage()
-{
-	if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
-}
-
-MSG& Window::GetMSG()
-{
-	return msg;
-}
-
 HWND Window::GetWindowHandle()
 {
 	return m_windowHandle;
+}
+
+bool Window::IsOpen()
+{
+	if (msg.message != WM_QUIT)
+	{
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
