@@ -297,6 +297,7 @@ void Renderer::Draw(Model &model, const Camera &cam, const Light &light, Shader 
 	shader.SetView(cam.GetView());
 	shader.SetProjection(cam.GetProjection());
 	shader.SetLight(light);
+	shader.SetColorObj(model.GetColor());
 	shader.Bind();
 
 	model.GetVertexBuffer().Bind();

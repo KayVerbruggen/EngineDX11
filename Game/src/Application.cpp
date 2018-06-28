@@ -95,6 +95,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	float rot[3] = {0.0f, 0.0f, 0.0f};
 	float pos[3] = {0.0f, 0.0f, 0.0f};
+	float color[3] = { 0.0f, 0.0f, 0.0f };
 
 	StartTimer();
 	while (window.IsOpen())
@@ -119,6 +120,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 
 			ImGui::SliderFloat3("Position", pos, -10.0f, 10.0f);
 			cube.SetPosition(pos[0], pos[1], pos[2]);
+
+			ImGui::ColorEdit3("Color", (float*)&color); // Edit 3 floats representing a color
+			cube.SetColor(color[0], color[1], color[2]);
 		}
 
 		renderer.Draw(cube, camera, light, shader);

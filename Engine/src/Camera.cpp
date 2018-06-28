@@ -29,6 +29,7 @@ void Camera::Update(float deltaTime)
 {
 	if (GetAsyncKeyState(C) & 1) 
 	{
+		SetCursorPos(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 		m_useCursor = !m_useCursor;
 		ShowCursor(m_useCursor);
 	}

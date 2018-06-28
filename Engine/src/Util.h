@@ -19,6 +19,7 @@ struct CBPerObject
 struct CBPerFrame
 {
 	Light light;
+	XMFLOAT4 colorObj;
 };
 
 // TODO: What if one of these changes? How do we handle that.

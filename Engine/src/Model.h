@@ -17,13 +17,14 @@ public:
 	Model(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
 	~Model();
 
-	// TODO: Finish these functions.
-	//void SetColor(float r, float g, float b, float a);
 	void SetPosition(float x, float y, float z);
 	void AddPosition(float x, float y, float z);
 
 	void SetRotation(float x, float y, float z);
 	void AddRotation(float x, float y, float z);
+
+	void SetColor(float r, float g, float b);
+	XMFLOAT4 GetColor();
 
 	inline IndexBuffer& GetIndexBuffer() { return m_indexBuffer; };
 	inline VertexBuffer& GetVertexBuffer() { return m_vertexBuffer; };
@@ -41,5 +42,7 @@ private:
 	float m_rotX, m_rotY, m_rotZ;
 	XMMATRIX m_rotationX, m_rotationY, m_rotationZ;
 	XMMATRIX m_translation;
+
+	XMFLOAT4 m_color;
 };
 

@@ -25,7 +25,7 @@ private:
 
 	float camYaw = 0.0f;
 	float camPitch = 0.0f;
-	float fov = 70.0f;
+	float fov = 90.0f;
 
 	// Variables for movement.
 	bool m_useCursor = false;
