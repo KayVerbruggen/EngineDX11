@@ -9,6 +9,7 @@ public:
 	~Window();
 
 	HWND GetWindowHandle();
+	MSG& GetMSG() { return msg; };
 	bool IsOpen();
 
 private:

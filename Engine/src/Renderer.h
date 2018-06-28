@@ -16,10 +16,15 @@ public:
 	void Draw(Model &model, const Camera &cam, const Light &light, Shader &shader);
 	void EndFrame();
 
+	void SetClearColor(float r, float g, float b);
+
 	static ID3D11Device* GetDevice() { return m_device; };
 	static ID3D11DeviceContext* GetDeviceContext() { return m_deviceCon; };
 
 private:
+	// Clear color, so the background.
+	float m_clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+
 	// Direct3D interfaces
 	static ID3D11Device* m_device;
 	static ID3D11DeviceContext* m_deviceCon;

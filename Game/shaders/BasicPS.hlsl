@@ -20,13 +20,15 @@ float4 main(InputPS input) : SV_TARGET
 {
 	input.normal = normalize(input.normal);
 	
-	float4 diffuse = { 1.0f, 0.3f, 0.8f, 1.0f };
+	float3 objCol = { 1.0f, 0.3f, 0.8f };
+
+	float3 ambient = light.ambient.xyz * objCol.xyz;
 
 	float3 lightDir = normalize(-light.dir);
-	float lightIntensity = saturate(dot(input.normal, lightDir));
-	float4 color = saturate(light.diffuse * lightIntensity);
+	float lightIntensity = max(dot(input.normal, lightDir), 0.0);
+	float3 diffuse = light.diffuse.xyz * lightIntensity * objCol;
 
-	color = color * diffuse;
+	float3 color = diffuse;
 
-	return color;
+	return float4(color, 1.0);
 }

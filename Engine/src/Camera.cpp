@@ -9,16 +9,16 @@ enum Keys : WPARAM
 
 Camera::Camera()
 {
-	camPos		= XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f);
-	camTarget	= XMVectorSet(0.0f, 0.0f,  1.0f, 0.0f);
-	camUp		= XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
+	pos		= XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f);
+	target	= XMVectorSet(0.0f, 0.0f,  1.0f, 0.0f);
+	up		= XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
 
-	camView = XMMatrixLookAtLH(camPos, camTarget, camUp);
+	view = XMMatrixLookAtLH(pos, target, up);
 
-	camProjection = XMMatrixPerspectiveFovLH(XMConvertToRadians(fov), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
+	projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(fov), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
 
 	world = XMMatrixIdentity();
-	wvp = world * camView * camProjection;
+	wvp = world * view * projection;
 }
 
 Camera::~Camera()
@@ -27,59 +27,68 @@ Camera::~Camera()
 
 void Camera::Update(float deltaTime)
 {
-	movementForward = 0.0f;
-	movementHorizontal = 0.0f;
-
-	if (GetAsyncKeyState(W))
+	if (GetAsyncKeyState(C) & 1) 
 	{
-		movementForward = movementSpeed * deltaTime;
-	}
-	if (GetAsyncKeyState(S))
-	{
-		movementForward = -movementSpeed * deltaTime;
-	}
-	if (GetAsyncKeyState(A))
-	{
-		movementHorizontal = -movementSpeed * deltaTime;
-	}
-	if (GetAsyncKeyState(D))
-	{
-		movementHorizontal = movementSpeed * deltaTime;
+		m_useCursor = !m_useCursor;
+		ShowCursor(m_useCursor);
 	}
 
-	GetCursorPos(&currMousePos);
-
-	if (currMousePos.x != prevMousePos.x)
+	if (!m_useCursor) 
 	{
-		camYaw += (currMousePos.x - prevMousePos.x) * (mouseSens / 100.0f);
-	}
-	if (currMousePos.y != prevMousePos.y)
-	{
-		camPitch += (currMousePos.y - prevMousePos.y) * (mouseSens / 100.0f);
+		float movementForward = 0.0f;
+		float movementHorizontal = 0.0f;
 
-		if (camPitch > 90.0f)
-			camPitch = 90.0f;
+		if (GetAsyncKeyState(W))
+		{
+			movementForward = movementSpeed * deltaTime;
+		}
+		if (GetAsyncKeyState(S))
+		{
+			movementForward = -movementSpeed * deltaTime;
+		}
+		if (GetAsyncKeyState(A))
+		{
+			movementHorizontal = -movementSpeed * deltaTime;
+		}
+		if (GetAsyncKeyState(D))
+		{
+			movementHorizontal = movementSpeed * deltaTime;
+		}
 
-		if (camPitch < -90.0f)
-			camPitch = -90.0f;
-	}
+		GetCursorPos(&currMousePos);
 
-	camRotationMatrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(camPitch), XMConvertToRadians(camYaw), 0);
-	camTarget = XMVector3TransformCoord(defaultForward, camRotationMatrix);
-	camTarget = XMVector3Normalize(camTarget);
+		if (currMousePos.x != prevMousePos.x)
+		{
+			camYaw += (currMousePos.x - prevMousePos.x) * (mouseSens / 100.0f);
+		}
+		if (currMousePos.y != prevMousePos.y)
+		{
+			camPitch += (currMousePos.y - prevMousePos.y) * (mouseSens / 100.0f);
 
-	XMMATRIX rotateYTempMatrix;
-	rotateYTempMatrix = XMMatrixRotationY(XMConvertToRadians(camYaw));
+			if (camPitch > 90.0f)
+				camPitch = 90.0f;
 
-	camRight = XMVector3TransformCoord(defaultRight, rotateYTempMatrix);
-	camUp = XMVector3TransformCoord(camUp, rotateYTempMatrix);
-	camForward = XMVector3TransformCoord(defaultForward, rotateYTempMatrix);
+			if (camPitch < -90.0f)
+				camPitch = -90.0f;
+		}
 
-	camPos += movementHorizontal * camRight;
-	camPos += movementForward * camForward;
+		rotationMatrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(camPitch), XMConvertToRadians(camYaw), 0);
+		target = XMVector3TransformCoord(defaultForward, rotationMatrix);
+		target = XMVector3Normalize(target);
 
-	camTarget = camPos + camTarget;
-	camView = XMMatrixLookAtLH(camPos, camTarget, camUp);
+		XMMATRIX rotateYTempMatrix;
+		rotateYTempMatrix = XMMatrixRotationY(XMConvertToRadians(camYaw));
+
+		XMVECTOR camRight = XMVector3TransformCoord(defaultRight, rotateYTempMatrix);
+		up = XMVector3TransformCoord(up, rotateYTempMatrix);
+		XMVECTOR camForward = XMVector3TransformCoord(defaultForward, rotateYTempMatrix);
+
+		pos += movementHorizontal * camRight;
+		pos += movementForward * camForward;
+
+		target = pos + target;
+		view = XMMatrixLookAtLH(pos, target, up);
 	
-	SetCursorPos(prevMousePos.x, prevMousePos.y);
+		SetCursorPos(prevMousePos.x, prevMousePos.y);
+	}
 }

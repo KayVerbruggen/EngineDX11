@@ -17,6 +17,14 @@ public:
 	Model(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
 	~Model();
 
+	// TODO: Finish these functions.
+	//void SetColor(float r, float g, float b, float a);
+	void SetPosition(float x, float y, float z);
+	void AddPosition(float x, float y, float z);
+
+	void SetRotation(float x, float y, float z);
+	void AddRotation(float x, float y, float z);
+
 	inline IndexBuffer& GetIndexBuffer() { return m_indexBuffer; };
 	inline VertexBuffer& GetVertexBuffer() { return m_vertexBuffer; };
 	inline XMMATRIX GetWorld() const { return m_world; };
@@ -28,9 +36,10 @@ private:
 	unsigned int m_indexSize;
 
 	XMMATRIX m_world;
-	Light sun;
 
-	float rotX, rotY, rotZ;
-	XMMATRIX rotation, scale, translation;
+	float m_posX, m_posY, m_posZ;
+	float m_rotX, m_rotY, m_rotZ;
+	XMMATRIX m_rotationX, m_rotationY, m_rotationZ;
+	XMMATRIX m_translation;
 };
 

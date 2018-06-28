@@ -14,27 +14,24 @@ public:
 
 	void Update(float deltaTime);
 
-	inline XMMATRIX GetView() const { return camView; };
-	inline XMMATRIX GetProjection() const { return camProjection; };
+	inline XMMATRIX GetView() const { return view; };
+	inline XMMATRIX GetProjection() const { return projection; };
 
 private:
-	XMMATRIX wvp, world, camView, camProjection, camRotationMatrix;
-	XMVECTOR camPos, camTarget, camUp;
+	XMMATRIX wvp, world, view, projection, rotationMatrix;
+	XMVECTOR pos, target, up;
 	XMVECTOR defaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR defaultForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 
-	XMVECTOR camRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-	XMVECTOR camForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-
 	float camYaw = 0.0f;
 	float camPitch = 0.0f;
-	float fov = 90.0f;
+	float fov = 70.0f;
 
 	// Variables for movement.
+	bool m_useCursor = false;
 	POINT prevMousePos = { (LONG)SCREEN_WIDTH / 2, (LONG)SCREEN_HEIGHT / 2 };
 	POINT currMousePos = { (LONG)SCREEN_WIDTH / 2, (LONG)SCREEN_HEIGHT / 2 };
 	float mouseSens = 5.0f;
-	float movementHorizontal, movementForward;
 	float movementSpeed = 2.5f;
 };
 

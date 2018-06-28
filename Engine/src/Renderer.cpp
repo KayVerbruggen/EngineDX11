@@ -78,8 +78,10 @@ void Renderer::InitDeviceAndSwapchain(HWND windowHandle)
 	// Buffer
 	sd.BufferCount			= 1;
 	sd.BufferDesc.Format	= DXGI_FORMAT_R8G8B8A8_UNORM;
-	sd.BufferDesc.Height	= (UINT)SCREEN_HEIGHT;
-	sd.BufferDesc.Width		= (UINT)SCREEN_WIDTH;
+	// I don't understand why, but if this is not 0, ImGui will offset the cursor.
+	// 0 means it's going to get the width and height from the output window.
+	sd.BufferDesc.Height    = 0;
+	sd.BufferDesc.Width     = 0;
 	sd.BufferUsage			= DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sd.SwapEffect			= DXGI_SWAP_EFFECT_DISCARD;
 	
@@ -275,7 +277,7 @@ void Renderer::InitAlphaBlendState()
 void Renderer::BeginFrame()
 {
 	m_deviceCon->OMSetRenderTargets(1, &m_renderTargetView, nullptr);
-	m_deviceCon->ClearRenderTargetView(m_renderTargetView, DirectX::Colors::CornflowerBlue);
+	m_deviceCon->ClearRenderTargetView(m_renderTargetView, m_clearColor);
 
 	if (GetAsyncKeyState(VK_TAB))
 	{
@@ -312,4 +314,11 @@ void Renderer::EndFrame()
 	{
 		m_swapChain->Present(0, 0);
 	}
+}
+
+void Renderer::SetClearColor(float r, float g, float b)
+{
+	m_clearColor[0] = r;
+	m_clearColor[1] = g;
+	m_clearColor[2] = b;
 }
