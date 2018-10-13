@@ -104,7 +104,12 @@ void Renderer::InitDeviceAndSwapchain(HWND windowHandle)
 	// No flags
 	sd.Flags = 0;
 
-	HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0,
+	UINT flags = D3D11_CREATE_DEVICE_SINGLETHREADED;
+#if _DEBUG
+	flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
+	HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, nullptr, 0,
 										D3D11_SDK_VERSION, &sd, &m_swapChain, &m_device, nullptr, &m_deviceCon);
 
 	if (hr != S_OK)
@@ -297,9 +302,9 @@ void Renderer::Draw(Model &model, const Camera &cam, const Light &light, Shader 
 	shader.SetView(cam.GetView());
 	shader.SetProjection(cam.GetProjection());
 	shader.SetLight(light);
-	shader.SetColorObj(model.GetColor());
 	shader.Bind();
 
+	model.GetTexture().Bind();
 	model.GetVertexBuffer().Bind();
 	model.GetIndexBuffer().Bind();
 

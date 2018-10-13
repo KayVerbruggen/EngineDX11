@@ -10,22 +10,21 @@ using namespace DirectX;
 #include "Camera.h"
 #include "Buffers.h"
 #include "Shader.h"
+#include "Texture.h"
 
 class Model
 {
 public:
-	Model(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
+	Model(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Texture texture);
 	~Model();
 
 	void SetPosition(float x, float y, float z);
 	void AddPosition(float x, float y, float z);
-
+	
 	void SetRotation(float x, float y, float z);
 	void AddRotation(float x, float y, float z);
 
-	void SetColor(float r, float g, float b);
-	XMFLOAT4 GetColor();
-
+	Texture GetTexture() { return m_texture; };
 	inline IndexBuffer& GetIndexBuffer() { return m_indexBuffer; };
 	inline VertexBuffer& GetVertexBuffer() { return m_vertexBuffer; };
 	inline XMMATRIX GetWorld() const { return m_world; };
@@ -43,6 +42,6 @@ private:
 	XMMATRIX m_rotationX, m_rotationY, m_rotationZ;
 	XMMATRIX m_translation;
 
-	XMFLOAT4 m_color;
+	Texture m_texture;
 };
 

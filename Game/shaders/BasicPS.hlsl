@@ -2,6 +2,7 @@ struct InputPS
 {
 	float4 position  : SV_POSITION;
 	float3 normal : NORMAL;
+	float2 texcoord : TEXCOORD;
 };
 
 struct Light
@@ -14,18 +15,21 @@ struct Light
 cbuffer cbPerFrame
 {
 	Light light;
-	float4 colorObj;
 };
+
+Texture2D objTexture;
+SamplerState objSamplerState;
 
 float4 main(InputPS input) : SV_TARGET
 {
 	input.normal = normalize(input.normal);
 
-	float3 ambient = light.ambient.xyz * colorObj.xyz;
+	float3 colorTex = objTexture.Sample(objSamplerState, input.texcoord);
+	float3 ambient = light.ambient.xyz * colorTex;
 
 	float3 lightDir = normalize(-light.dir);
 	float lightIntensity = max(dot(input.normal, lightDir), 0.0);
-	float3 diffuse = light.diffuse.xyz * lightIntensity * colorObj;
+	float3 diffuse = light.diffuse.xyz * lightIntensity * colorTex;
 
 	float3 color = ambient + diffuse;
 

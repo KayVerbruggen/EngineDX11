@@ -20,7 +20,6 @@ public:
 	inline void SetBufferObject(const CBPerObject &cbObj) { m_cbObject = cbObj; };
 
 	inline void SetLight(Light light) { m_cbFrame.light = light; };
-	inline void SetColorObj(XMFLOAT4 col) { m_cbFrame.colorObj = col; };
 private:
 	ID3D11InputLayout* m_inputLayout;
 	ID3D11VertexShader* m_vertexShader;

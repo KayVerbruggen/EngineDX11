@@ -28,6 +28,8 @@
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Util.h" />
     <ClInclude Include="src\Window.h" />
+    <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\WICTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Shader.cpp" />
@@ -37,6 +39,8 @@
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Window.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\WICTextureLoader.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

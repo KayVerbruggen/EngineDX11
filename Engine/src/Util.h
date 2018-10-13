@@ -7,6 +7,7 @@ struct Vertex
 {
 	float x, y, z;
 	float nx, ny, nz;
+	float u, v;
 };
 
 struct CBPerObject
@@ -19,7 +20,6 @@ struct CBPerObject
 struct CBPerFrame
 {
 	Light light;
-	XMFLOAT4 colorObj;
 };
 
 // TODO: What if one of these changes? How do we handle that.

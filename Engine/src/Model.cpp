@@ -2,8 +2,8 @@
 
 #include "Renderer.h"
 
-Model::Model(std::vector<Vertex> vertices, std::vector<unsigned int> indices) 
-	: m_indexBuffer(indices), m_vertexBuffer(vertices)
+Model::Model(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Texture texture) 
+	: m_indexBuffer(indices), m_vertexBuffer(vertices), m_texture(texture)
 {
 	m_indexSize = (unsigned int)indices.size();
 
@@ -82,14 +82,4 @@ void Model::AddRotation(float x, float y, float z)
 	m_rotationZ = XMMatrixRotationAxis(rotAxis, XMConvertToRadians(m_rotZ));
 
 	m_world = (m_rotationX * m_rotationY * m_rotationZ) * m_translation;
-}
-
-void Model::SetColor(float r, float g, float b)
-{
-	m_color = XMFLOAT4(r, g, b, 1.0f);
-}
-
-XMFLOAT4 Model::GetColor()
-{
-	return m_color;
 }

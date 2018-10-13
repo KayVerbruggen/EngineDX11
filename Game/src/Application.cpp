@@ -14,46 +14,46 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 	Window window(hInstance, showCmd);
 	Renderer renderer(window.GetWindowHandle());
 	Camera camera;
-	Light light(0.2f, -1.0f, 0.3f);
+	Light light(0.0f, 0.0f, 1.0f);
 	Shader shader("shaders/BasicVS.cso", "shaders/BasicPS.cso");
 
 	std::vector<Vertex> vertices =
 	{
 		// Front Face
-		Vertex{ -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, },
-		Vertex{ -1.0f,  1.0f, -1.0f, -1.0f,  1.0f, -1.0f, },
-		Vertex{ 1.0f,  1.0f, -1.0f,  1.0f,  1.0f, -1.0f, },
-		Vertex{ 1.0f, -1.0f, -1.0f,  1.0f, -1.0f, -1.0f, },
+		Vertex{ -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f },
+		Vertex{ -1.0f,  1.0f, -1.0f, -1.0f,  1.0f, -1.0f, 0.0f, 1.0f },
+		Vertex{  1.0f,  1.0f, -1.0f,  1.0f,  1.0f, -1.0f, 1.0f, 1.0f },
+		Vertex{  1.0f, -1.0f, -1.0f,  1.0f, -1.0f, -1.0f, 0.0f, 1.0f },
 
 		// Back Face
-		Vertex{ -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, },
-		Vertex{ 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, },
-		Vertex{ 1.0f,  1.0f, 1.0f, 1.0f,  1.0f, 1.0f, },
-		Vertex{ -1.0f,  1.0f, 1.0f, -1.0f,  1.0f, 1.0f, },
+		Vertex{ -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f },
+		Vertex{  1.0f, -1.0f, 1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 1.0f },
+		Vertex{  1.0f,  1.0f, 1.0f,  1.0f,  1.0f, 1.0f, 1.0f, 1.0f },
+		Vertex{ -1.0f,  1.0f, 1.0f, -1.0f,  1.0f, 1.0f, 0.0f, 1.0f },
 
 		// Top Face
-		Vertex{ -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, },
-		Vertex{ -1.0f, 1.0f,  1.0f, -1.0f, 1.0f,  1.0f, },
-		Vertex{ 1.0f, 1.0f,  1.0f, 1.0f, 1.0f,  1.0f, },
-		Vertex{ 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, },
+		Vertex{ -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 0.0f, 0.0f },
+		Vertex{ -1.0f, 1.0f,  1.0f, -1.0f, 1.0f,  1.0f, 0.0f, 1.0f },
+		Vertex{  1.0f, 1.0f,  1.0f,  1.0f, 1.0f,  1.0f, 1.0f, 1.0f },
+		Vertex{  1.0f, 1.0f, -1.0f,  1.0f, 1.0f, -1.0f, 0.0f, 1.0f },
 
 		// Bottom Face
-		Vertex{ -1.0f, -1.0f, -1.0f,-1.0f, -1.0f, -1.0f, },
-		Vertex{ 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, },
-		Vertex{ 1.0f, -1.0f,  1.0f, 1.0f, -1.0f,  1.0f, },
-		Vertex{ -1.0f, -1.0f,  1.0f,-1.0f, -1.0f,  1.0f, },
+		Vertex{ -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f },
+		Vertex{  1.0f, -1.0f, -1.0f,  1.0f, -1.0f, -1.0f, 0.0f, 1.0f },
+		Vertex{  1.0f, -1.0f,  1.0f,  1.0f, -1.0f,  1.0f, 1.0f, 1.0f },
+		Vertex{ -1.0f, -1.0f,  1.0f, -1.0f, -1.0f,  1.0f, 0.0f, 1.0f },
 
 		// Left Face
-		Vertex{ -1.0f, -1.0f,  1.0f,  -1.0f, -1.0f,  1.0f, },
-		Vertex{ -1.0f,  1.0f,  1.0f,  -1.0f,  1.0f,  1.0f, },
-		Vertex{ -1.0f,  1.0f, -1.0f,  -1.0f,  1.0f, -1.0f, },
-		Vertex{ -1.0f, -1.0f, -1.0f,  -1.0f, -1.0f, -1.0f, },
+		Vertex{ -1.0f, -1.0f,  1.0f,  -1.0f, -1.0f,  1.0f, 0.0f, 0.0f },
+		Vertex{ -1.0f,  1.0f,  1.0f,  -1.0f,  1.0f,  1.0f, 0.0f, 1.0f },
+		Vertex{ -1.0f,  1.0f, -1.0f,  -1.0f,  1.0f, -1.0f, 1.0f, 1.0f },
+		Vertex{ -1.0f, -1.0f, -1.0f,  -1.0f, -1.0f, -1.0f, 0.0f, 1.0f },
 
 		// Right Face
-		Vertex{ 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, },
-		Vertex{ 1.0f,  1.0f, -1.0f, 1.0f,  1.0f, -1.0f, },
-		Vertex{ 1.0f,  1.0f,  1.0f, 1.0f,  1.0f,  1.0f, },
-		Vertex{ 1.0f, -1.0f,  1.0f, 1.0f, -1.0f,  1.0f, }
+		Vertex{ 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f },
+		Vertex{ 1.0f,  1.0f, -1.0f, 1.0f,  1.0f, -1.0f, 0.0f, 1.0f },
+		Vertex{ 1.0f,  1.0f,  1.0f, 1.0f,  1.0f,  1.0f, 1.0f, 1.0f },
+		Vertex{ 1.0f, -1.0f,  1.0f, 1.0f, -1.0f,  1.0f, 0.0f, 1.0f }
 	};
 
 	std::vector<unsigned int> indices =
@@ -83,7 +83,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 		20, 22, 23
 	};
 
-	Model cube(vertices, indices);
+	Model cube(vertices, indices, Texture(L"res/grass.png"));
 
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -95,7 +95,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	float rot[3] = {0.0f, 0.0f, 0.0f};
 	float pos[3] = {0.0f, 0.0f, 0.0f};
-	float color[3] = { 0.0f, 0.0f, 0.0f };
 
 	StartTimer();
 	while (window.IsOpen())
@@ -120,9 +119,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 
 			ImGui::SliderFloat3("Position", pos, -10.0f, 10.0f);
 			cube.SetPosition(pos[0], pos[1], pos[2]);
-
-			ImGui::ColorEdit3("Color", (float*)&color); // Edit 3 floats representing a color
-			cube.SetColor(color[0], color[1], color[2]);
 		}
 
 		renderer.Draw(cube, camera, light, shader);

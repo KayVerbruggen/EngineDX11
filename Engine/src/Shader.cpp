@@ -22,10 +22,11 @@ Shader::Shader(std::string vsFileName, std::string psFileName)
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA }
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA }
 	};
 
-	hr = Renderer::GetDevice()->CreateInputLayout(layout, 2, vsData.data(), vsData.size(), &m_inputLayout);
+	hr = Renderer::GetDevice()->CreateInputLayout(layout, 3, vsData.data(), vsData.size(), &m_inputLayout);
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create input layout", "Direct3D 11 Error", MB_OK);
 
