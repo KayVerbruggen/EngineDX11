@@ -2,11 +2,9 @@
 
 #include "Renderer.h"
 
-Model::Model(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Texture texture) 
-	: m_indexBuffer(indices), m_vertexBuffer(vertices), m_texture(texture)
+Model::Model(Mesh mesh, Texture texture) 
+	: m_mesh(mesh), m_texture(texture)
 {
-	m_indexSize = (unsigned int)indices.size();
-
 	m_world = XMMatrixIdentity();
 
 	XMVECTOR rotAxis = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);

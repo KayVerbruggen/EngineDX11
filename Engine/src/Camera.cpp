@@ -9,13 +9,13 @@ enum Keys : WPARAM
 
 Camera::Camera()
 {
-	pos		= XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f);
+	pos		= XMVectorSet(0.0f, 1.0f, -3.0f, 0.0f);
 	target	= XMVectorSet(0.0f, 0.0f,  1.0f, 0.0f);
 	up		= XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
 
 	view = XMMatrixLookAtLH(pos, target, up);
 
-	projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(fov), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
+	projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(fov), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 1000.0f);
 
 	world = XMMatrixIdentity();
 	wvp = world * view * projection;

@@ -25,6 +25,7 @@ Texture::Texture(std::wstring texFile)
 
 Texture::~Texture()
 {
+	// TODO: Find out why I can't release the texture and sampler state.
 	/*
 	if (m_samplerState)
 	{

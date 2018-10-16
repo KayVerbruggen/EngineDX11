@@ -12,7 +12,7 @@ Renderer::Renderer(HWND windowHandle)
 	InitDepthStencilState();
 	InitDepthStencilView();
 
-	m_deviceCon->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
+	m_deviceCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	InitRasterizerState();
 	InitViewport();
@@ -50,7 +50,7 @@ Renderer::~Renderer()
 		m_depthBuffer->Release();
 		m_depthBuffer = 0;
 	}
-
+	
 	if (m_depthStencilState)
 	{
 		m_depthStencilState->Release();
@@ -78,10 +78,8 @@ void Renderer::InitDeviceAndSwapchain(HWND windowHandle)
 	// Buffer
 	sd.BufferCount			= 1;
 	sd.BufferDesc.Format	= DXGI_FORMAT_R8G8B8A8_UNORM;
-	// I don't understand why, but if this is not 0, ImGui will offset the cursor.
-	// 0 means it's going to get the width and height from the output window.
-	sd.BufferDesc.Height    = 0;
-	sd.BufferDesc.Width     = 0;
+	sd.BufferDesc.Height    = WINDOW_HEIGHT;
+	sd.BufferDesc.Width     = WINDOW_WIDTH;
 	sd.BufferUsage			= DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sd.SwapEffect			= DXGI_SWAP_EFFECT_DISCARD;
 	
@@ -132,14 +130,15 @@ void Renderer::InitRenderTargetView()
 
 void Renderer::InitDepthBuffer()
 {
-	D3D11_TEXTURE2D_DESC depthBufferDesc = { 0 };
+	D3D11_TEXTURE2D_DESC depthBufferDesc;
+	ZeroMemory(&depthBufferDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
-	depthBufferDesc.Width = (UINT)SCREEN_WIDTH;
-	depthBufferDesc.Height = (UINT)SCREEN_HEIGHT;
+	depthBufferDesc.Width = (UINT)WINDOW_WIDTH;
+	depthBufferDesc.Height = (UINT)WINDOW_HEIGHT;
 	depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depthBufferDesc.MipLevels = 1;
 	depthBufferDesc.ArraySize = 1;
-	depthBufferDesc.SampleDesc.Count = 1;
+	depthBufferDesc.SampleDesc.Count = MSAA;
 	depthBufferDesc.SampleDesc.Quality = 0;
 	depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
@@ -166,12 +165,12 @@ void Renderer::InitDepthStencilState()
 	depthStencilDesc.StencilWriteMask = 0xFF;
 
 	depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 	depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 	depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
@@ -189,9 +188,8 @@ void Renderer::InitDepthStencilView()
 	ZeroMemory(&depthStencilViewDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
 	
 	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
-	depthStencilViewDesc.Flags = 0;
 
 	HRESULT hr = m_device->CreateDepthStencilView(m_depthBuffer, &depthStencilViewDesc, &m_depthStencilView);
 	if (hr != S_OK)
@@ -238,12 +236,12 @@ void Renderer::InitRasterizerState()
 
 void Renderer::InitViewport()
 {
-	CD3D11_VIEWPORT vp;
+	D3D11_VIEWPORT vp;
 
 	vp.TopLeftX = 0.0f;
 	vp.TopLeftY = 0.0f;
-	vp.Width = SCREEN_WIDTH;
-	vp.Height = SCREEN_HEIGHT;
+	vp.Width = (float)WINDOW_WIDTH;
+	vp.Height = (float)WINDOW_HEIGHT;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 
@@ -281,8 +279,9 @@ void Renderer::InitAlphaBlendState()
 
 void Renderer::BeginFrame()
 {
-	m_deviceCon->OMSetRenderTargets(1, &m_renderTargetView, nullptr);
+	m_deviceCon->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 	m_deviceCon->ClearRenderTargetView(m_renderTargetView, m_clearColor);
+	m_deviceCon->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 1);
 
 	if (GetAsyncKeyState(VK_TAB))
 	{
@@ -292,8 +291,6 @@ void Renderer::BeginFrame()
 	{
 		m_deviceCon->RSSetState(m_rasterizerState);
 	}
-
-	m_deviceCon->OMSetDepthStencilState(m_depthStencilState, 1);
 }
 
 void Renderer::Draw(Model &model, const Camera &cam, const Light &light, Shader &shader)
@@ -303,12 +300,16 @@ void Renderer::Draw(Model &model, const Camera &cam, const Light &light, Shader 
 	shader.SetProjection(cam.GetProjection());
 	shader.SetLight(light);
 	shader.Bind();
-
+	
 	model.GetTexture().Bind();
-	model.GetVertexBuffer().Bind();
-	model.GetIndexBuffer().Bind();
 
-	m_deviceCon->DrawIndexed((UINT)model.GetIndexSize(), 0, 0);
+	for (unsigned int i = 0; i < model.GetMesh().GetMeshCount(); i++)
+	{
+		model.GetMesh().GetVertexBuffer(i).Bind();
+		model.GetMesh().GetIndexBuffer(i).Bind();
+
+		m_deviceCon->DrawIndexed((UINT)model.GetMesh().GetIndexSize(i), 0, 0);
+	}
 }
 
 void Renderer::EndFrame()

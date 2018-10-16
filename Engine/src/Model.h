@@ -11,11 +11,12 @@ using namespace DirectX;
 #include "Buffers.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Mesh.h"
 
 class Model
 {
 public:
-	Model(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Texture texture);
+	Model(Mesh mesh, Texture texture);
 	~Model();
 
 	void SetPosition(float x, float y, float z);
@@ -25,15 +26,12 @@ public:
 	void AddRotation(float x, float y, float z);
 
 	Texture GetTexture() { return m_texture; };
-	inline IndexBuffer& GetIndexBuffer() { return m_indexBuffer; };
-	inline VertexBuffer& GetVertexBuffer() { return m_vertexBuffer; };
+	Mesh GetMesh() { return m_mesh; };
 	inline XMMATRIX GetWorld() const { return m_world; };
-	inline unsigned int GetIndexSize() const { return m_indexSize; };
 
 private:
-	IndexBuffer m_indexBuffer;
-	VertexBuffer m_vertexBuffer;
-	unsigned int m_indexSize;
+	Mesh m_mesh;
+	Texture m_texture;
 
 	XMMATRIX m_world;
 
@@ -42,6 +40,5 @@ private:
 	XMMATRIX m_rotationX, m_rotationY, m_rotationZ;
 	XMMATRIX m_translation;
 
-	Texture m_texture;
 };
 

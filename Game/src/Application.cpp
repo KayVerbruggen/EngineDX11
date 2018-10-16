@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Camera.h"
 #include "Util.h"
+#include "Mesh.h"
 
 #include "imgui/imgui_impl_dx11.h"
 #include "imgui/imgui_impl_win32.h"
@@ -83,7 +84,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 		20, 22, 23
 	};
 
-	Model cube(vertices, indices, Texture(L"res/grass.png"));
+	Model cube(Mesh("res/tree.fbx"), Texture(L"res/TextureAtlas.png"));
 
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;

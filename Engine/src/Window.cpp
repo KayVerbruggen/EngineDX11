@@ -46,6 +46,15 @@ Window::Window(HINSTANCE hInstance, UINT showCmd)
 	const char* className = "WindowClass";
 	const char* windowTitle = "Game";
 
+	// Window rectangle which will make sure that:
+	// the width and height do NOT include the border.
+	RECT wr;
+	wr.left		= SCREEN_WIDTH/2 - (int)WINDOW_WIDTH/2;
+	wr.top		= SCREEN_HEIGHT/2 - (int)WINDOW_HEIGHT/2;
+	wr.right	= wr.left + (LONG)WINDOW_WIDTH;
+	wr.bottom	= wr.top + (LONG)WINDOW_HEIGHT;
+	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false);
+
 	// TODO: Figure out how to change icons.
 	WNDCLASSEX wc = {};
 	wc.cbSize = sizeof(WNDCLASSEX);
@@ -64,7 +73,7 @@ Window::Window(HINSTANCE hInstance, UINT showCmd)
 	RegisterClassEx(&wc);
 
 	m_windowHandle = CreateWindowEx(WS_EX_APPWINDOW, className, windowTitle, WS_OVERLAPPEDWINDOW,
-		0, 0, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT, 0, 0, hInstance, 0);
+		wr.left, wr.top, wr.right-wr.left, wr.bottom-wr.top, 0, 0, hInstance, 0);
 
 	if (m_windowHandle == NULL)
 		MessageBoxA(0, "WindowHandle is still NULL", "Error", MB_OK);

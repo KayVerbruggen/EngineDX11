@@ -25,11 +25,13 @@ IndexBuffer::IndexBuffer(const std::vector<unsigned int>& indices)
 
 IndexBuffer::~IndexBuffer()
 {
+	/*
 	if (m_buffer)
 	{
 		m_buffer->Release();
 		m_buffer = 0;
 	}
+	*/
 }
 
 void IndexBuffer::Bind() const
@@ -60,11 +62,13 @@ VertexBuffer::VertexBuffer(const std::vector<Vertex>& vertices)
 
 VertexBuffer::~VertexBuffer()
 {
+	/*
 	if (m_buffer)
 	{
 		m_buffer->Release();
 		m_buffer = 0;
 	}
+	*/
 }
 
 void VertexBuffer::Bind() const
