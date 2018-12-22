@@ -10,7 +10,9 @@ Current list of features:
 - Walking and looking around
 
 TODO:
+- Terrain
 - Different types of light
+- Shadows
 - Text/GUI rendering
 - Sound
 
