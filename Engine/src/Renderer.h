@@ -5,6 +5,7 @@
 #include <d3dcompiler.h>
 
 #include "Model.h"
+#include "Shader.h"
 
 class Renderer
 {
@@ -13,7 +14,7 @@ public:
 	~Renderer();
 
 	void BeginFrame();
-	void Draw(Model &model, const Camera &cam, const Light &light, Shader &shader);
+	void Draw(Model &model, const Camera &cam, const Light &light);
 	void EndFrame();
 
 	void SetClearColor(float r, float g, float b);
@@ -24,6 +25,9 @@ public:
 private:
 	// Clear color, so the background.
 	float m_clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+	// Shaders, so the client doesn't have to deal with them.
+	std::unique_ptr<Shader> m_modelShader;
 
 	// Direct3D interfaces
 	static ID3D11Device* m_device;

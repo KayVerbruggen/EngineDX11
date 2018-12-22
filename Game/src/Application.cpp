@@ -16,7 +16,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 	Renderer renderer(window.GetWindowHandle());
 	Camera camera;
 	Light light(0.0f, 0.0f, 1.0f);
-	Shader shader("shaders/BasicVS.cso", "shaders/BasicPS.cso");
 
 	std::vector<Vertex> vertices =
 	{
@@ -122,7 +121,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 			cube.SetPosition(pos[0], pos[1], pos[2]);
 		}
 
-		renderer.Draw(cube, camera, light, shader);
+		renderer.Draw(cube, camera, light);
 
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

@@ -24,7 +24,7 @@ float4 main(InputPS input) : SV_TARGET
 {
 	input.normal = normalize(input.normal);
 
-	float3 colorTex = objTexture.Sample(objSamplerState, input.texcoord);
+	float3 colorTex = objTexture.Sample(objSamplerState, input.texcoord).xyz;
 	float3 ambient = light.ambient.xyz * colorTex;
 
 	float3 lightDir = normalize(-light.dir);

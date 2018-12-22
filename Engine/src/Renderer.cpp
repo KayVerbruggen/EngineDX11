@@ -11,12 +11,11 @@ Renderer::Renderer(HWND windowHandle)
 	InitDepthBuffer();
 	InitDepthStencilState();
 	InitDepthStencilView();
-
-	m_deviceCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 	InitRasterizerState();
 	InitViewport();
 	InitAlphaBlendState();
+
+	m_modelShader = std::make_unique<Shader>("shaders/ModelVS.cso", "shaders/ModelPS.cso");
 }
 
 Renderer::~Renderer()
@@ -112,6 +111,8 @@ void Renderer::InitDeviceAndSwapchain(HWND windowHandle)
 
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create Device and Swapchain", "Direct3D 11 Error", MB_OK);
+
+	m_deviceCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void Renderer::InitRenderTargetView()
@@ -293,13 +294,13 @@ void Renderer::BeginFrame()
 	}
 }
 
-void Renderer::Draw(Model &model, const Camera &cam, const Light &light, Shader &shader)
+void Renderer::Draw(Model &model, const Camera &cam, const Light &light)
 {
-	shader.SetWorld(model.GetWorld());
-	shader.SetView(cam.GetView());
-	shader.SetProjection(cam.GetProjection());
-	shader.SetLight(light);
-	shader.Bind();
+	m_modelShader->SetView(cam.GetView());
+	m_modelShader->SetWorld(model.GetWorld());
+	m_modelShader->SetProjection(cam.GetProjection());
+	m_modelShader->SetLight(light);
+	m_modelShader->Bind();
 	
 	model.GetTexture().Bind();
 

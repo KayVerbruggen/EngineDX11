@@ -15,10 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shaders\BasicVS.hlsl" />
-    <FxCompile Include="shaders\BasicPS.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
