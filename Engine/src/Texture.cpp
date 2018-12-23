@@ -18,7 +18,8 @@ Texture::Texture(std::wstring texFile)
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create sampler state!", "D3D11 Error", MB_OK);
 
-	hr = DirectX::CreateWICTextureFromFile(Renderer::GetDevice().Get(), texFile.c_str(), nullptr, m_texture.GetAddressOf());
+	hr = DirectX::CreateWICTextureFromFile(Renderer::GetDevice().Get(), texFile.c_str(), 
+											nullptr, m_texture.GetAddressOf());
 	if (hr != S_OK)
 		MessageBox(0, "Failed to load texture from file!", "D3D11 Error", MB_OK);
 }

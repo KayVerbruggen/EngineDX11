@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Util.h"
 #include "Mesh.h"
+#include "Terrain.h"
 
 #include "imgui/imgui_impl_dx11.h"
 #include "imgui/imgui_impl_win32.h"
@@ -17,7 +18,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 	Camera camera;
 	Light light(0.0f, 0.0f, 1.0f);
 
-	auto tree = std::make_shared<Model>(std::make_shared<Mesh>("res/tree.fbx"), std::make_shared<Texture>(L"res/TextureAtlas.png"));
+	auto tree = std::make_shared<Model>(std::make_shared<Mesh>("res/tree.fbx"), 
+									    std::make_shared<Texture>(L"res/TextureAtlas.png"));
+
+	auto terrain = std::make_shared<Terrain>(std::make_shared<Texture>(L"res/grass.png"), 500.0f, 500.0f);
 
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -56,6 +60,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 		}
 
 		renderer.Draw(tree, camera, light);
+		renderer.Draw(terrain, camera, light);
 
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

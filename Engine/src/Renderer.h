@@ -2,11 +2,11 @@
 
 #include <d3d11.h>
 #include <DirectXColors.h>
-//#include <d3dcompiler.h>
 #include <wrl/client.h>
 
 #include "Model.h"
 #include "Shader.h"
+#include "Terrain.h"
 
 using namespace Microsoft::WRL;
 
@@ -18,6 +18,7 @@ public:
 
 	void BeginFrame();
 	void Draw(std::shared_ptr<Model> model, const Camera &cam, const Light &light);
+	void Draw(std::shared_ptr<Terrain> terrain, const Camera &cam, const Light &light);
 	void EndFrame();
 
 	void SetClearColor(float r, float g, float b);

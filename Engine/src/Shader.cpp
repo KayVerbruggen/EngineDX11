@@ -11,11 +11,13 @@ Shader::Shader(std::string vsFileName, std::string psFileName)
 	std::vector<char> vsData = { std::istreambuf_iterator<char>(vsFile), std::istreambuf_iterator<char>() };
 	std::vector<char> psData = { std::istreambuf_iterator<char>(psFile), std::istreambuf_iterator<char>() };
 
-	HRESULT hr = Renderer::GetDevice()->CreateVertexShader(vsData.data(), vsData.size(), nullptr, m_vertexShader.GetAddressOf());
+	HRESULT hr = Renderer::GetDevice()->CreateVertexShader(vsData.data(), vsData.size(), 
+														   nullptr, m_vertexShader.GetAddressOf());
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create the vertex shader!", "D3D11 Error", MB_OK);
 
-	hr = Renderer::GetDevice()->CreatePixelShader(psData.data(), psData.size(), nullptr, m_pixelShader.GetAddressOf());
+	hr = Renderer::GetDevice()->CreatePixelShader(psData.data(), psData.size(), 
+												  nullptr, m_pixelShader.GetAddressOf());
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create the pixel shader!", "D3D11 Error", MB_OK);
 
@@ -26,7 +28,8 @@ Shader::Shader(std::string vsFileName, std::string psFileName)
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA }
 	};
 
-	hr = Renderer::GetDevice()->CreateInputLayout(layout, 3, vsData.data(), vsData.size(), m_inputLayout.GetAddressOf());
+	hr = Renderer::GetDevice()->CreateInputLayout(layout, 3, vsData.data(), 
+												  vsData.size(), m_inputLayout.GetAddressOf());
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create input layout", "Direct3D 11 Error", MB_OK);
 

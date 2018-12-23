@@ -15,7 +15,8 @@ Camera::Camera()
 
 	view = XMMatrixLookAtLH(pos, target, up);
 
-	projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(fov), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 1000.0f);
+	projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(fov), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 
+										  0.1f, 1000.0f);
 
 	world = XMMatrixIdentity();
 	wvp = world * view * projection;

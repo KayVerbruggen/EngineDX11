@@ -211,7 +211,8 @@ void Renderer::InitDepthStencilView()
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
-	HRESULT hr = m_device->CreateDepthStencilView(m_depthBuffer.Get(), &depthStencilViewDesc, m_depthStencilView.GetAddressOf());
+	HRESULT hr = m_device->CreateDepthStencilView(m_depthBuffer.Get(), &depthStencilViewDesc, 
+													m_depthStencilView.GetAddressOf());
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create depth stencil view!", "Direct3D 11 Error", MB_OK);
 }
@@ -301,7 +302,8 @@ void Renderer::BeginFrame()
 {
 	m_deviceCon->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.Get());
 	m_deviceCon->ClearRenderTargetView(m_renderTargetView.Get(), m_clearColor);
-	m_deviceCon->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 1);
+	m_deviceCon->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+										1.0f, 1);
 
 	if (GetAsyncKeyState(VK_TAB))
 	{
@@ -330,6 +332,22 @@ void Renderer::Draw(std::shared_ptr<Model> model, const Camera &cam, const Light
 
 		m_deviceCon->DrawIndexed((UINT)model->GetMesh()->GetIndexSize(i), 0, 0);
 	}
+}
+
+void Renderer::Draw(std::shared_ptr<Terrain> terrain, const Camera &cam, const Light &light)
+{
+	m_modelShader->SetView(cam.GetView());
+	m_modelShader->SetWorld(terrain->GetWorld());
+	m_modelShader->SetProjection(cam.GetProjection());
+	m_modelShader->SetLight(light);
+	m_modelShader->Bind();
+
+	terrain->GetTexture()->Bind();
+
+	terrain->GetVertexBuffer().Bind();
+	terrain->GetIndexBuffer().Bind();
+
+	m_deviceCon->DrawIndexed(6, 0, 0);
 }
 
 void Renderer::EndFrame()

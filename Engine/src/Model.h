@@ -27,7 +27,7 @@ public:
 
 	std::shared_ptr<Texture> GetTexture() { return m_texture; };
 	std::shared_ptr<Mesh> GetMesh() { return m_mesh; };
-	inline XMMATRIX GetWorld() const { return m_world; };
+	inline XMMATRIX& GetWorld() { return m_world; };
 
 private:
 	std::shared_ptr<Mesh> m_mesh;
