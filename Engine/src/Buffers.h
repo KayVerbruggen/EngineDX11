@@ -4,6 +4,9 @@
 #include <vector>
 
 #include "Util.h"
+#include <wrl/client.h>
+
+using namespace Microsoft::WRL;
 
 class IndexBuffer 
 {
@@ -15,7 +18,7 @@ public:
 	void Bind() const;
 
 private:
-	ID3D11Buffer * m_buffer;
+	ComPtr<ID3D11Buffer> m_buffer;
 };
 
 class VertexBuffer
@@ -28,5 +31,5 @@ public:
 	void Bind() const;
 
 private:
-	ID3D11Buffer * m_buffer;
+	ComPtr<ID3D11Buffer> m_buffer;
 };

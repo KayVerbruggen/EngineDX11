@@ -25,18 +25,15 @@ IndexBuffer::IndexBuffer(const std::vector<unsigned int>& indices)
 
 IndexBuffer::~IndexBuffer()
 {
-	/*
 	if (m_buffer)
 	{
-		m_buffer->Release();
-		m_buffer = 0;
+		m_buffer.Reset();
 	}
-	*/
 }
 
 void IndexBuffer::Bind() const
 {
-	Renderer::GetDeviceContext()->IASetIndexBuffer(m_buffer, DXGI_FORMAT_R32_UINT, 0);
+	Renderer::GetDeviceContext()->IASetIndexBuffer(m_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 }
 
 VertexBuffer::VertexBuffer(const std::vector<Vertex>& vertices)
@@ -55,20 +52,17 @@ VertexBuffer::VertexBuffer(const std::vector<Vertex>& vertices)
 	ZeroMemory(&data, sizeof(D3D11_SUBRESOURCE_DATA));
 
 	data.pSysMem = vertices.data();
-	auto hr = Renderer::GetDevice()->CreateBuffer(&bufferDesc, &data, &m_buffer);
+	auto hr = Renderer::GetDevice()->CreateBuffer(&bufferDesc, &data, m_buffer.GetAddressOf());
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create vertex buffer", "Direct3D 11 Error", MB_OK);
 }
 
 VertexBuffer::~VertexBuffer()
 {
-	/*
 	if (m_buffer)
 	{
-		m_buffer->Release();
-		m_buffer = 0;
+		m_buffer.Reset();
 	}
-	*/
 }
 
 void VertexBuffer::Bind() const
@@ -76,5 +70,5 @@ void VertexBuffer::Bind() const
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
-	Renderer::GetDeviceContext()->IASetVertexBuffers(0, 1, &m_buffer, &stride, &offset);
+	Renderer::GetDeviceContext()->IASetVertexBuffers(0, 1, m_buffer.GetAddressOf(), &stride, &offset);
 }

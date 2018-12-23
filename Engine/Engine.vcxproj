@@ -31,6 +31,7 @@
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\WICTextureLoader.h" />
+    <ClInclude Include="src\Terrain.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mesh.cpp" />
@@ -43,6 +44,7 @@
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\WICTextureLoader.cpp" />
+    <ClCompile Include="src\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders\ModelPS.hlsl">

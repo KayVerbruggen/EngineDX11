@@ -2,9 +2,12 @@
 
 #include <d3d11.h>
 #include <string>
+#include <wrl/client.h>
 
 #include "Light.h"
 #include "Util.h"
+
+using namespace Microsoft::WRL;
 
 class Shader
 {
@@ -21,13 +24,13 @@ public:
 
 	inline void SetLight(Light light) { m_cbFrame.light = light; };
 private:
-	ID3D11InputLayout* m_inputLayout;
-	ID3D11VertexShader* m_vertexShader;
-	ID3D11PixelShader* m_pixelShader;
+	ComPtr<ID3D11InputLayout> m_inputLayout;
+	ComPtr<ID3D11VertexShader> m_vertexShader;
+	ComPtr<ID3D11PixelShader> m_pixelShader;
 
-	ID3D11Buffer* m_bufferPerObject;
+	ComPtr<ID3D11Buffer> m_bufferPerObject;
 	CBPerObject m_cbObject;
-	ID3D11Buffer* m_bufferPerFrame;
+	ComPtr<ID3D11Buffer> m_bufferPerFrame;
 	CBPerFrame m_cbFrame;
 };
 

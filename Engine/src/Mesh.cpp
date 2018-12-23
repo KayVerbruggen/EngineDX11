@@ -71,6 +71,10 @@ Mesh::Mesh(std::string meshFile)
 
 	meshCount = scene->mNumMeshes;
 
+	m_vertexBuffers.reserve(meshCount);
+	m_indexBuffers.reserve(meshCount);
+	m_indexSize.reserve(meshCount);
+
 	// Loop through each mesh in the scene.
 	for (unsigned int i = 0; i < meshCount; i++)
 	{
@@ -79,9 +83,9 @@ Mesh::Mesh(std::string meshFile)
 		auto vertices = ProcessVertices(currMesh);
 		auto indices = ProcessIndices(currMesh);
 
-		m_vertexBuffers.push_back(VertexBuffer(vertices));
-		m_indexBuffers.push_back(IndexBuffer(indices));
-		m_indexSize.push_back((unsigned int)indices.size());
+		m_vertexBuffers.emplace_back(vertices);
+		m_indexBuffers.emplace_back(indices);
+		m_indexSize.emplace_back((unsigned int)indices.size());
 	}
 }
 

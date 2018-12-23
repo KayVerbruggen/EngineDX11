@@ -1,8 +1,8 @@
 #include "Renderer.h"
 #include "Util.h"
 
-ID3D11Device* Renderer::m_device;
-ID3D11DeviceContext* Renderer::m_deviceCon;
+ComPtr<ID3D11Device> Renderer::m_device;
+ComPtr<ID3D11DeviceContext> Renderer::m_deviceCon;
 
 Renderer::Renderer(HWND windowHandle)
 {
@@ -20,54 +20,72 @@ Renderer::Renderer(HWND windowHandle)
 
 Renderer::~Renderer()
 {
-	if (m_device)
+	if (m_modelShader) 
 	{
-		m_device->Release();
-		m_device = 0;
+		m_modelShader.reset();
 	}
 
-	if (m_deviceCon)
+	if (m_blendState)
 	{
-		m_deviceCon->Release();
-		m_deviceCon = 0;
+		m_blendState.Reset();
 	}
 
-	if (m_renderTargetView)
+	if (m_rasterizerWireframeState)
 	{
-		m_renderTargetView->Release();
-		m_renderTargetView = 0;
-	}
-
-	if (m_swapChain)
-	{
-		m_swapChain->Release();
-		m_swapChain = 0;
-	}
-
-	if (m_depthBuffer)
-	{
-		m_depthBuffer->Release();
-		m_depthBuffer = 0;
-	}
-	
-	if (m_depthStencilState)
-	{
-		m_depthStencilState->Release();
-		m_depthStencilState = 0;
-	}
-
-	if (m_depthStencilView)
-	{
-		m_depthStencilView->Release();
-		m_depthStencilView = 0;
+		m_rasterizerWireframeState.Reset();
 	}
 
 	if (m_rasterizerState)
 	{
-		m_rasterizerState->Release();
-		m_rasterizerState = 0;
+		m_rasterizerState.Reset();
+	}
+
+	if (m_depthStencilView)
+	{
+		m_depthStencilView.Reset();
+	}
+
+	if (m_depthStencilState)
+	{
+		m_depthStencilState.Reset();
+	}
+
+	if (m_depthBuffer)
+	{
+		m_depthBuffer.Reset();
+	}
+	
+	if (m_renderTargetView)
+	{
+		m_renderTargetView.Reset();
+	}
+
+	if (m_swapChain)
+	{
+		m_swapChain.Reset();
+	}
+
+	if (m_deviceCon)
+	{
+		m_deviceCon->ClearState();
+		m_deviceCon->Flush();
+		m_deviceCon.Reset();
+	}
+
+#if _DEBUG
+	m_device->QueryInterface(IID_PPV_ARGS(m_debugInterface.GetAddressOf()));
+	if (m_debugInterface)
+	{
+		m_debugInterface->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+		m_debugInterface.Reset();
+	}
+#endif
+	if (m_device)
+	{
+		m_device.Reset();
 	}
 }
+
 
 void Renderer::InitDeviceAndSwapchain(HWND windowHandle)
 {
@@ -107,7 +125,8 @@ void Renderer::InitDeviceAndSwapchain(HWND windowHandle)
 #endif
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, nullptr, 0,
-										D3D11_SDK_VERSION, &sd, &m_swapChain, &m_device, nullptr, &m_deviceCon);
+										D3D11_SDK_VERSION, &sd, m_swapChain.GetAddressOf(),
+										m_device.GetAddressOf(), nullptr, m_deviceCon.GetAddressOf());
 
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create Device and Swapchain", "Direct3D 11 Error", MB_OK);
@@ -117,16 +136,16 @@ void Renderer::InitDeviceAndSwapchain(HWND windowHandle)
 
 void Renderer::InitRenderTargetView()
 {
-	ID3D11Texture2D* backBuffer;
-	HRESULT hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
+	ComPtr<ID3D11Texture2D> backBuffer;
+	HRESULT hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)backBuffer.GetAddressOf());
 	if (hr != S_OK)
 		MessageBox(0, "Failed to get buffer!", "Direct3D 11 Error", MB_OK);
 
-	hr = m_device->CreateRenderTargetView(backBuffer, nullptr, &m_renderTargetView);
+	hr = m_device->CreateRenderTargetView(backBuffer.Get(), nullptr, m_renderTargetView.GetAddressOf());
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create render target view!", "Direct3D 11 Error", MB_OK);
 
-	backBuffer->Release();
+	backBuffer = nullptr;
 }
 
 void Renderer::InitDepthBuffer()
@@ -146,7 +165,7 @@ void Renderer::InitDepthBuffer()
 	depthBufferDesc.CPUAccessFlags = 0;
 	depthBufferDesc.MiscFlags = 0;
 
-	HRESULT hr = m_device->CreateTexture2D(&depthBufferDesc, nullptr, &m_depthBuffer);
+	HRESULT hr = m_device->CreateTexture2D(&depthBufferDesc, nullptr, m_depthBuffer.GetAddressOf());
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create depth buffer!", "Direct3D 11 Error", MB_OK);
 
@@ -180,7 +199,7 @@ void Renderer::InitDepthStencilState()
 	if (hr != S_OK)
 		MessageBox(0, "Creating Depth stencil state failed!", "Direct3D 11 Error", MB_OK);
 
-	m_deviceCon->OMSetDepthStencilState(m_depthStencilState, 1);
+	m_deviceCon->OMSetDepthStencilState(m_depthStencilState.Get(), 1);
 }
 
 void Renderer::InitDepthStencilView()
@@ -192,7 +211,7 @@ void Renderer::InitDepthStencilView()
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
-	HRESULT hr = m_device->CreateDepthStencilView(m_depthBuffer, &depthStencilViewDesc, &m_depthStencilView);
+	HRESULT hr = m_device->CreateDepthStencilView(m_depthBuffer.Get(), &depthStencilViewDesc, m_depthStencilView.GetAddressOf());
 	if (hr != S_OK)
 		MessageBox(0, "Failed to create depth stencil view!", "Direct3D 11 Error", MB_OK);
 }
@@ -226,7 +245,7 @@ void Renderer::InitRasterizerState()
 	if (hr != S_OK)
 		MessageBox(0, "Creating rasterizer state failed!", "Direct3D 11 Error", MB_OK);
 
-	m_deviceCon->RSSetState(m_rasterizerState);
+	m_deviceCon->RSSetState(m_rasterizerState.Get());
 
 	rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
 
@@ -275,41 +294,41 @@ void Renderer::InitAlphaBlendState()
 	blendFactor[2] = 0.0f;
 	blendFactor[3] = 0.0f;
 
-	m_deviceCon->OMSetBlendState(m_blendState, blendFactor, 0xffffffff);
+	m_deviceCon->OMSetBlendState(m_blendState.Get(), blendFactor, 0xffffffff);
 }
 
 void Renderer::BeginFrame()
 {
-	m_deviceCon->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
-	m_deviceCon->ClearRenderTargetView(m_renderTargetView, m_clearColor);
-	m_deviceCon->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 1);
+	m_deviceCon->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.Get());
+	m_deviceCon->ClearRenderTargetView(m_renderTargetView.Get(), m_clearColor);
+	m_deviceCon->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 1);
 
 	if (GetAsyncKeyState(VK_TAB))
 	{
-		m_deviceCon->RSSetState(m_rasterizerWireframeState);
+		m_deviceCon->RSSetState(m_rasterizerWireframeState.Get());
 	}
 	else
 	{
-		m_deviceCon->RSSetState(m_rasterizerState);
+		m_deviceCon->RSSetState(m_rasterizerState.Get());
 	}
 }
 
-void Renderer::Draw(Model &model, const Camera &cam, const Light &light)
+void Renderer::Draw(std::shared_ptr<Model> model, const Camera &cam, const Light &light)
 {
 	m_modelShader->SetView(cam.GetView());
-	m_modelShader->SetWorld(model.GetWorld());
+	m_modelShader->SetWorld(model->GetWorld());
 	m_modelShader->SetProjection(cam.GetProjection());
 	m_modelShader->SetLight(light);
 	m_modelShader->Bind();
 	
-	model.GetTexture().Bind();
+	model->GetTexture()->Bind();
 
-	for (unsigned int i = 0; i < model.GetMesh().GetMeshCount(); i++)
+	for (unsigned int i = 0; i < model->GetMesh()->GetMeshCount(); i++)
 	{
-		model.GetMesh().GetVertexBuffer(i).Bind();
-		model.GetMesh().GetIndexBuffer(i).Bind();
+		model->GetMesh()->GetVertexBuffer(i).Bind();
+		model->GetMesh()->GetIndexBuffer(i).Bind();
 
-		m_deviceCon->DrawIndexed((UINT)model.GetMesh().GetIndexSize(i), 0, 0);
+		m_deviceCon->DrawIndexed((UINT)model->GetMesh()->GetIndexSize(i), 0, 0);
 	}
 }
 

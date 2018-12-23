@@ -17,79 +17,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 	Camera camera;
 	Light light(0.0f, 0.0f, 1.0f);
 
-	std::vector<Vertex> vertices =
-	{
-		// Front Face
-		Vertex{ -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f },
-		Vertex{ -1.0f,  1.0f, -1.0f, -1.0f,  1.0f, -1.0f, 0.0f, 1.0f },
-		Vertex{  1.0f,  1.0f, -1.0f,  1.0f,  1.0f, -1.0f, 1.0f, 1.0f },
-		Vertex{  1.0f, -1.0f, -1.0f,  1.0f, -1.0f, -1.0f, 0.0f, 1.0f },
-
-		// Back Face
-		Vertex{ -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f },
-		Vertex{  1.0f, -1.0f, 1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 1.0f },
-		Vertex{  1.0f,  1.0f, 1.0f,  1.0f,  1.0f, 1.0f, 1.0f, 1.0f },
-		Vertex{ -1.0f,  1.0f, 1.0f, -1.0f,  1.0f, 1.0f, 0.0f, 1.0f },
-
-		// Top Face
-		Vertex{ -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 0.0f, 0.0f },
-		Vertex{ -1.0f, 1.0f,  1.0f, -1.0f, 1.0f,  1.0f, 0.0f, 1.0f },
-		Vertex{  1.0f, 1.0f,  1.0f,  1.0f, 1.0f,  1.0f, 1.0f, 1.0f },
-		Vertex{  1.0f, 1.0f, -1.0f,  1.0f, 1.0f, -1.0f, 0.0f, 1.0f },
-
-		// Bottom Face
-		Vertex{ -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f },
-		Vertex{  1.0f, -1.0f, -1.0f,  1.0f, -1.0f, -1.0f, 0.0f, 1.0f },
-		Vertex{  1.0f, -1.0f,  1.0f,  1.0f, -1.0f,  1.0f, 1.0f, 1.0f },
-		Vertex{ -1.0f, -1.0f,  1.0f, -1.0f, -1.0f,  1.0f, 0.0f, 1.0f },
-
-		// Left Face
-		Vertex{ -1.0f, -1.0f,  1.0f,  -1.0f, -1.0f,  1.0f, 0.0f, 0.0f },
-		Vertex{ -1.0f,  1.0f,  1.0f,  -1.0f,  1.0f,  1.0f, 0.0f, 1.0f },
-		Vertex{ -1.0f,  1.0f, -1.0f,  -1.0f,  1.0f, -1.0f, 1.0f, 1.0f },
-		Vertex{ -1.0f, -1.0f, -1.0f,  -1.0f, -1.0f, -1.0f, 0.0f, 1.0f },
-
-		// Right Face
-		Vertex{ 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f },
-		Vertex{ 1.0f,  1.0f, -1.0f, 1.0f,  1.0f, -1.0f, 0.0f, 1.0f },
-		Vertex{ 1.0f,  1.0f,  1.0f, 1.0f,  1.0f,  1.0f, 1.0f, 1.0f },
-		Vertex{ 1.0f, -1.0f,  1.0f, 1.0f, -1.0f,  1.0f, 0.0f, 1.0f }
-	};
-
-	std::vector<unsigned int> indices =
-	{
-		// Front Face
-		0,  1,  2,
-		0,  2,  3,
-
-		// Back Face
-		4,  5,  6,
-		4,  6,  7,
-
-		// Top Face
-		8,  9, 10,
-		8, 10, 11,
-
-		// Bottom Face
-		12, 13, 14,
-		12, 14, 15,
-
-		// Left Face
-		16, 17, 18,
-		16, 18, 19,
-
-		// Right Face
-		20, 21, 22,
-		20, 22, 23
-	};
-
-	Model cube(Mesh("res/tree.fbx"), Texture(L"res/TextureAtlas.png"));
+	auto tree = std::make_shared<Model>(std::make_shared<Mesh>("res/tree.fbx"), std::make_shared<Texture>(L"res/TextureAtlas.png"));
 
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 
 	ImGui_ImplWin32_Init(window.GetWindowHandle());
-	ImGui_ImplDX11_Init(Renderer::GetDevice(), Renderer::GetDeviceContext());
+	ImGui_ImplDX11_Init(Renderer::GetDevice().Get(), Renderer::GetDeviceContext().Get());
 	ImGui::StyleColorsDark();
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -115,13 +49,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 
 			ImGui::Text("Cube:");
 			ImGui::SliderFloat3("Rotation", rot, 0.0f, 360.0f);
-			cube.SetRotation(rot[0], rot[1], rot[2]);
+			tree->SetRotation(rot[0], rot[1], rot[2]);
 
 			ImGui::SliderFloat3("Position", pos, -10.0f, 10.0f);
-			cube.SetPosition(pos[0], pos[1], pos[2]);
+			tree->SetPosition(pos[0], pos[1], pos[2]);
 		}
 
-		renderer.Draw(cube, camera, light);
+		renderer.Draw(tree, camera, light);
 
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

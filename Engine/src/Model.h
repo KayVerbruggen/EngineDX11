@@ -16,7 +16,7 @@ using namespace DirectX;
 class Model
 {
 public:
-	Model(Mesh mesh, Texture texture);
+	Model(std::shared_ptr<Mesh> mesh, std::shared_ptr<Texture> texture);
 	~Model();
 
 	void SetPosition(float x, float y, float z);
@@ -25,13 +25,13 @@ public:
 	void SetRotation(float x, float y, float z);
 	void AddRotation(float x, float y, float z);
 
-	Texture GetTexture() { return m_texture; };
-	Mesh GetMesh() { return m_mesh; };
+	std::shared_ptr<Texture> GetTexture() { return m_texture; };
+	std::shared_ptr<Mesh> GetMesh() { return m_mesh; };
 	inline XMMATRIX GetWorld() const { return m_world; };
 
 private:
-	Mesh m_mesh;
-	Texture m_texture;
+	std::shared_ptr<Mesh> m_mesh;
+	std::shared_ptr<Texture> m_texture;
 
 	XMMATRIX m_world;
 

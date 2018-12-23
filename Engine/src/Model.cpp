@@ -2,10 +2,11 @@
 
 #include "Renderer.h"
 
-Model::Model(Mesh mesh, Texture texture) 
-	: m_mesh(mesh), m_texture(texture)
+Model::Model(std::shared_ptr<Mesh> mesh, std::shared_ptr<Texture> texture)
 {
 	m_world = XMMatrixIdentity();
+	m_mesh = mesh;
+	m_texture = texture;
 
 	XMVECTOR rotAxis = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 	m_rotationX = XMMatrixRotationAxis(rotAxis, XMConvertToRadians(0.0f));
