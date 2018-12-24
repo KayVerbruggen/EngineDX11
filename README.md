@@ -8,12 +8,13 @@ Current list of features:
 - Little menu with IMGUI
 - Directional light
 - Walking and looking around
+- Terrain
 
 TODO:
-- Terrain
 - Different types of light
 - Shadows
 - Text/GUI rendering
 - Sound
+- More complicated terrain (e.g. heightmaps)
 
 ~ Kay Verbruggen
