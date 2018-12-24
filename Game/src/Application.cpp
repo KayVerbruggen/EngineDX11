@@ -33,6 +33,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	float rot[3] = {0.0f, 0.0f, 0.0f};
 	float pos[3] = {0.0f, 0.0f, 0.0f};
+	float scale[3] = {1.0, 1.0f, 1.0f};
 
 	StartTimer();
 	while (window.IsOpen())
@@ -52,6 +53,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 			renderer.SetClearColor(clear_color.x, clear_color.y, clear_color.z);
 
 			ImGui::Text("Cube:");
+
+			ImGui::SliderFloat3("Scale", scale, 0.0f, 3.0f);
+			tree->SetScale(scale[0], scale[1], scale[2]);
+
 			ImGui::SliderFloat3("Rotation", rot, 0.0f, 360.0f);
 			tree->SetRotation(rot[0], rot[1], rot[2]);
 

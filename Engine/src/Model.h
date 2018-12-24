@@ -24,6 +24,9 @@ public:
 	
 	void SetRotation(float x, float y, float z);
 	void AddRotation(float x, float y, float z);
+	
+	void SetScale(float x, float y, float z);
+	void AddScale(float x, float y, float z);
 
 	std::shared_ptr<Texture> GetTexture() { return m_texture; };
 	std::shared_ptr<Mesh> GetMesh() { return m_mesh; };
@@ -35,10 +38,12 @@ private:
 
 	XMMATRIX m_world;
 
-	float m_posX, m_posY, m_posZ;
-	float m_rotX, m_rotY, m_rotZ;
+	// Transformations with some standard values.
+	float m_posX = 0.0f, m_posY = 0.0f, m_posZ = 0.0f;
+	float m_rotX = 0.0f, m_rotY = 0.0f, m_rotZ = 0.0f;
+	float m_scaleX = 1.0f, m_scaleY = 1.0f, m_scaleZ = 1.0f;
 	XMMATRIX m_rotationX, m_rotationY, m_rotationZ;
 	XMMATRIX m_translation;
-
+	XMMATRIX m_scale;
 };
 
